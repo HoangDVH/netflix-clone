@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty-pattern
 const Search = styled("div")(({}) => ({
@@ -36,29 +36,30 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-// import statements...
-
-// import statements...
-
 export const SearchBox = () => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null); // initialize with null
+  const typingTimeoutRef = useRef(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const handleEnterPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && searchInputRef.current) {
-      navigate(`/search?q=${searchInput}`);
+  const handleInputChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const newSearchInput = target.value;
+    setSearchInput(newSearchInput);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
     }
+    typingTimeoutRef.current = setTimeout(() => {
+      if (newSearchInput.trim() === "") {
+        navigate("/browse");
+      } else {
+        navigate(`/search?q=${newSearchInput}`);
+      }
+    }, 100);
   };
 
   useEffect(() => {
-    const handleInputChange = (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      const newSearchInput = target.value;
-      setSearchInput(newSearchInput);
-    };
-
     if (searchInputRef.current) {
       searchInputRef.current.addEventListener("input", handleInputChange);
     }
@@ -72,7 +73,9 @@ export const SearchBox = () => {
 
   return (
     <Search
-      sx={isFocused ? { border: "1px solid white", backgroundColor: "black" } : {}}
+      sx={
+        isFocused ? { border: "1px solid white", backgroundColor: "black" } : {}
+      }
     >
       <SearchIconWrapper>
         <SearchIcon />
@@ -88,12 +91,9 @@ export const SearchBox = () => {
           onBlur: () => {
             setIsFocused(false);
           },
-          onKeyDown: handleEnterPress,
         }}
         value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
       />
     </Search>
   );
 };
-
