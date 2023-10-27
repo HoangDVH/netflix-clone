@@ -8,6 +8,7 @@ export const WatchVideo = () => {
   const playerRef = useRef<Player | null>(null);
   const [muted, setMuted] = useState(true);
   const { movieId } = useParams();
+
   const { data } = useGetMovieVideoQuery(movieId);
 
   const handleReady = useCallback((player: Player) => {
@@ -15,26 +16,30 @@ export const WatchVideo = () => {
     setMuted(player.muted());
   }, []);
   return (
-    <div className="">
-      <VideoJSPlayer
-        options={{
-          loop: true,
-          autoplay: true,
-          controls: true,
-          responsive: true,
-          fluid: true,
-          techOrder: ["youtube"],
-          sources: [
-            {
-              type: "video/youtube",
-              src: `https://www.youtube.com/watch?v=${
-                data?.results[0]?.key || "L3oOldViIgY"
-              }`,
-            },
-          ],
-        }}
-        onReady={handleReady}
-      />
-    </div>
+    <>
+      {data && (
+        <div className="">
+          <VideoJSPlayer
+            options={{
+              loop: true,
+              autoplay: true,
+              controls: true,
+              responsive: true,
+              fluid: true,
+              techOrder: ["youtube"],
+              sources: [
+                {
+                  type: "video/youtube",
+                  src: `https://www.youtube.com/watch?v=${
+                    data?.results[0]?.key || "L3oOldViIgY"
+                  }`,
+                },
+              ],
+            }}
+            onReady={handleReady}
+          />
+        </div>
+      )}
+    </>
   );
 };

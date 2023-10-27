@@ -19,6 +19,7 @@ import { MoviePopup } from "./MoviePopup";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 interface titleProps {
   title: string;
 }
@@ -59,7 +60,10 @@ export const VideoSlider = (props: titleProps) => {
           {title} Movies
           <div
             className="group/edit invisible group-hover/item:visible group-hover/item:translate-x-4 transition-transform duration-300 ease-in-out"
-            onClick={() => navigate(`/genre/${title}`)}
+            onClick={() => {
+              navigate(`/genre/${title}`);
+            
+            }}
           >
             <span className="text-xl text-green-400 py-4 capitalize font-bold hover:cursor-pointer">
               Explore All

@@ -16,15 +16,40 @@ import MaturityRate from "../MaturityRate";
 import { getRandomNumber } from "../../utils/common";
 import { Movie } from "../../types/Movie";
 import { useLazyGetAppendedVideosQuery } from "../../apis/movieDetail";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import DetailModal from "../DetailMovieModal/DetailModalHeader";
+import useOffSetTop from "../../hooks/useOffSetTop";
 export const Trailer = () => {
   const navigate = useNavigate();
   const [getVideoDetail, { data: detail }] = useLazyGetAppendedVideosQuery();
   const [video, setVideo] = useState<Movie | null>(null);
   const [muted, setMuted] = useState(true);
   const playerRef = useRef<Player | null>(null);
+  const isOffset = useOffSetTop(window.innerWidth * 0.5625);
   const { data, isFetching } = useGetMoviePopularQuery();
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    if (playerRef.current) {
+      if (isOffset) {
+        playerRef.current.pause();
+      } else {
+        if (playerRef.current.paused()) {
+          playerRef.current.play();
+        }
+      }
+    }
+  }, [isOffset]);
 
   useEffect(() => {
     if (data && data.results) {
@@ -201,14 +226,23 @@ export const Trailer = () => {
                       {video?.overview}
                     </MaxLineTypography>
                     <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                
-                        <PlayButton size="large" />
-                      
+                      {/* <PlayButton size="large" /> */}
+                      <button
+                        onClick={() => navigate(`/${video.id}/watch`)}
+                        className="bg-white w-32 rounded text-2xl"
+                      >
+                        <div className="flex items-center gap-1 pl-4">
+                          <PlayArrowIcon fontSize="large" />
+                          <span className="font-semibold">Play</span>
+                        </div>
+                      </button>
+
                       <MoreInfoButton
                         size="large"
-                        // onClick={() => {
-                        //   setDetailType({ mediaType, id: video.id });
-                        // }}
+                        onClick={() => {
+                          navigate(`/${video.id}`);
+                          handleClickOpen();
+                        }}
                       />
                     </Stack>
                   </Stack>
@@ -219,6 +253,7 @@ export const Trailer = () => {
         </Box>
       </Box>
       );
+      <DetailModal open={open} handleClose={handleClose} />
     </>
   );
 };

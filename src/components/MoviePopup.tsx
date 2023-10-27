@@ -1,5 +1,5 @@
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
+
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { useState } from "react";
@@ -30,6 +30,7 @@ export const MoviePopup = (props: PopProps) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
+    navigate(`/${movie.id}`);
     setOpen(true);
   };
   const handleClose = () => {
@@ -68,12 +69,7 @@ export const MoviePopup = (props: PopProps) => {
                 <ThumbUpOffAltIcon />
               </NetflixIconButton>
               <Box flexGrow={1} />
-              <div
-                onClick={() => {
-                  navigate(`/${movie.id}`);
-                  handleClickOpen();
-                }}
-              >
+              <div onClick={handleClickOpen}>
                 <NetflixIconButton sx={{ zIndex: 2, marginLeft: 10 }}>
                   <KeyboardArrowDownIcon />
                 </NetflixIconButton>

@@ -59,7 +59,6 @@ export const Home = () => {
               </button>
             </div>
             <div className="">
-              {" "}
               {errors?.email && (
                 <p className="text-red-600">{errors.email.message}</p>
               )}
