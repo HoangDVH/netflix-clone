@@ -1,13 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import movieReducer from "./movie.slice";
-import { movieApi } from "./apis/movie";
+import { movieApi } from "../apis/movie";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import favorReducer from "./favorite.slice";
 // ...
 
 export const store = configureStore({
   reducer: {
     movies: movieReducer,
     [movieApi.reducerPath]: movieApi.reducer,
+    favorite: favorReducer,
   },
   //thêm api middleware để enable các tính năng như catching, invalidation,polling của rtk-querry
   middleware: (getDefaultMiddleware) =>
@@ -15,6 +17,8 @@ export const store = configureStore({
 });
 
 setupListeners(store.dispatch);
+
+
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

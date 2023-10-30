@@ -16,7 +16,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { SearchBox } from "./SearchBox";
 import SearchIcon from "@mui/icons-material/Search";
 
-const pages = ["My List", "Movies", "Tv Shows"];
+const pages = [
+  { id: 1, title: "My List", link: "/favorite" },
+  { id: 2, title: "Movie", link: "/" },
+  { id: 3, title: "Tv Show", link: "/" },
+];
 const settings = [
   { id: 1, title: "Profile", link: "/" },
   { id: 2, title: "Account", link: "/" },
@@ -111,8 +115,8 @@ export const NavBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.id} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.title}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -142,11 +146,11 @@ export const NavBar = () => {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
-                key={page}
+                key={page.id}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                {page}
+                <Link to={page.link}>{page.title}</Link>
               </Button>
             ))}
           </Box>

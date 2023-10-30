@@ -4,14 +4,16 @@ import { useState } from "react";
 import { MoviePopup } from "../components/MoviePopup";
 import { IMAGE_URL } from "../components/VideoSlider";
 import { NavBar } from "../components/navbar/NavBar";
+import { Movie } from "../types/Movie";
 export const SearchResultPage = () => {
   const [hoveredMovie, setHoveredMovie] = useState<Movie | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const q = searchParams.get("q");
   const { data } = useGetSearchMovieQuery(q);
   return (
     <div>
       <NavBar />
+      <p></p>
       <div className="grid grid-cols-2 md:grid-cols-6 mx-8 md:mx-16 gap-3 my-36">
         {data?.results.map((movie) => {
           return (

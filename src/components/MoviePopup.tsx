@@ -20,6 +20,12 @@ import QualityChip from "./QualityChip";
 
 import DetailModal from "./DetailMovieModal/DetailModalHeader";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToFavorite, removeFromFavorite } from "../store/favorite.slice";
+import { toast } from "react-toastify";
+import Tooltip from "@mui/material/Tooltip";
+
+import CheckIcon from "@mui/icons-material/Check";
 interface PopProps {
   movie: Movie;
 }
@@ -29,12 +35,30 @@ export const MoviePopup = (props: PopProps) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
+  const [isFavorited, setIsFavorited] = useState(movie.addedToFavor);
+
   const handleClickOpen = () => {
     navigate(`/${movie.id}`);
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const dispatch = useDispatch();
+
+  const handleAddFavor = () => {
+    dispatch(
+      isFavorited
+        ? removeFromFavorite(movie) // Sử dụng action removeFromFavorite khi isFavorited là true
+        : addToFavorite({ ...movie, addedToFavor: true }) // Sử dụng action addToFavorite khi isFavorited là false
+    );
+    toast.success(
+      `Movie ${movie.title} has been ${
+        isFavorited ? "removed" : "added"
+      } successfully`
+    );
+    setIsFavorited(!isFavorited); // Đảo ngược trạng thái của isFavorited
   };
 
   return (
@@ -63,17 +87,23 @@ export const MoviePopup = (props: PopProps) => {
                 />
               </NetflixIconButton>
               <NetflixIconButton>
-                <AddIcon />
+                <Tooltip title="Add to My List" placement="top">
+                  <div onClick={handleAddFavor}>
+                    {isFavorited ? <CheckIcon /> : <AddIcon />}
+                  </div>
+                </Tooltip>
               </NetflixIconButton>
               <NetflixIconButton>
                 <ThumbUpOffAltIcon />
               </NetflixIconButton>
               <Box flexGrow={1} />
-              <div onClick={handleClickOpen}>
-                <NetflixIconButton sx={{ zIndex: 2, marginLeft: 10 }}>
-                  <KeyboardArrowDownIcon />
-                </NetflixIconButton>
-              </div>
+              <Tooltip title="Info" placement="top">
+                <div onClick={handleClickOpen}>
+                  <NetflixIconButton sx={{ zIndex: 2 }}>
+                    <KeyboardArrowDownIcon />
+                  </NetflixIconButton>
+                </div>
+              </Tooltip>
             </Stack>
           </Typography>
           <Stack direction="row" spacing={1} alignItems="center">
