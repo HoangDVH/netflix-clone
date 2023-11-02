@@ -16,10 +16,11 @@ import {
 } from "../apis/movie";
 
 import { MoviePopup } from "./MoviePopup";
-import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
-
+import "netslider/dist/styles.min.css";
+import { Skeleton } from "@mui/material";
 interface titleProps {
   title: string;
 }
@@ -27,7 +28,7 @@ interface titleProps {
 export const IMAGE_URL = "https://image.tmdb.org/t/p/w500";
 export const VideoSlider = (props: titleProps) => {
   const navigate = useNavigate();
-  const [hoveredMovie, setHoveredMovie] = useState<Movie | null>(null);
+
   const { title } = props;
 
   let data, isFetching;
@@ -46,7 +47,11 @@ export const VideoSlider = (props: titleProps) => {
   }
 
   if (isFetching) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Skeleton />
+      </div>
+    );
   }
 
   if (!data) {
@@ -54,7 +59,7 @@ export const VideoSlider = (props: titleProps) => {
   }
 
   return (
-    <div className="mt-48 -mb-40 px-16 ">
+    <div className="mt-5 md:mt-52 mb-12 md:-mb-40 px-8 md:px-16 ">
       <div className="">
         <div className="text-2xl text-white py-4 capitalize font-bold cursor-pointer group/item flex w-96">
           {title} Movies
@@ -62,7 +67,6 @@ export const VideoSlider = (props: titleProps) => {
             className="group/edit invisible group-hover/item:visible group-hover/item:translate-x-4 transition-transform duration-300 ease-in-out"
             onClick={() => {
               navigate(`/genre/${title}`);
-            
             }}
           >
             <span className="text-xl text-green-400 py-4 capitalize font-bold hover:cursor-pointer">
@@ -98,24 +102,17 @@ export const VideoSlider = (props: titleProps) => {
           }}
         >
           {data.results.map((movie: Movie) => (
-            <div key={movie.id} className="">
+            <div key={movie.id} className="relative">
               <SwiperSlide>
-                <div
-                  className=""
-                  onMouseEnter={() => setHoveredMovie(movie)}
-                  onMouseLeave={() => setHoveredMovie(null)}
-                >
-                  {hoveredMovie === movie ? (
-                    <div className="h-96 w-96 -translate-x-28">
-                      <MoviePopup movie={movie} />
-                    </div>
-                  ) : (
-                    <img
-                      src={`${IMAGE_URL}${movie.backdrop_path}`}
-                      alt="poster"
-                      className="object-contain h-80 w-full hover:invisible"
-                    />
-                  )}
+                <div className="group">
+                  <img
+                    src={`${IMAGE_URL}${movie.poster_path}`}
+                    alt="poster"
+                    className="object-contain h-60 w-full"
+                  />
+                  <div className="opacity-0 group-hover:opacity-100 md:h-96 h-36 md:w-full w-5 z-10 absolute top-0 left-0 flex items-center justify-center transition-opacity duration-300 md:-translate-y-6 translate-y-12 hover:scale-125">
+                    <MoviePopup movie={movie} />
+                  </div>
                 </div>
               </SwiperSlide>
             </div>

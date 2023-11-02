@@ -13,14 +13,15 @@ import { WatchVideoPage } from "./pages/WatchVideoPage.tsx";
 
 import { MovieListPage } from "./pages/MovieListPage.tsx";
 import { HomePage } from "./pages/HomePage.tsx";
-import { LoginPage } from "./pages/LoginPage.tsx";
 
 import { Auth0Provider } from "@auth0/auth0-react";
 import { SearchResultPage } from "./pages/SearchResultPage.tsx";
 import { Favorite } from "./components/Favorite.tsx";
 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { RegisterPage } from "./pages/RegisterPage.tsx";
+import { LoginPage } from "./pages/LoginPage.tsx";
 const domain = import.meta.env.REACT_APP_AUTH0_DOMAIN;
 console.log("domain", domain);
 const clientId = import.meta.env.REACT_APP_CLIENT_ID;
@@ -48,8 +49,8 @@ const router = createBrowserRouter([
     element: <MovieListPage />,
   },
   {
-    path: "/login",
-    element: <LoginPage />,
+    path: "/register",
+    element: <RegisterPage />,
   },
   {
     path: "/search",
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
   {
     path: "/favorite",
     element: <Favorite />,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")!).render(

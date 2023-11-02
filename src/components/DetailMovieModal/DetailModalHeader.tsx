@@ -9,7 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
 import VideoJSPlayer from "../VideoJSPlayer";
 import Player from "video.js/dist/types/player";
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetMovieVideoQuery } from "../../apis/movieDetail";
 import MaxLineTypography from "../MaxLineTypography";
@@ -39,10 +39,8 @@ interface DetailModalProp {
   handleClose: () => void;
 }
 export default function DetailModal(props: DetailModalProp) {
- 
-
   const { open, handleClose } = props;
-  
+
   const { movieId } = useParams();
   const navigate = useNavigate();
   console.log("detailid", movieId);
@@ -68,6 +66,7 @@ export default function DetailModal(props: DetailModalProp) {
     navigate("/browse");
     handleClose();
   };
+
   return (
     <>
       {data && (

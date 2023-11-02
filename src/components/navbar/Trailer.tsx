@@ -1,6 +1,6 @@
 import Player from "video.js/dist/types/player";
-import MoreInfoButton from "../MoreInfoButton";
-import PlayButton from "../PlayButton";
+import InfoIcon from "@mui/icons-material/Info";
+
 import VideoJSPlayer from "../VideoJSPlayer";
 import { useRef, useState, useMemo, useEffect } from "react";
 import Box from "@mui/material/Box";
@@ -9,7 +9,7 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 
 import NetflixIconButton from "../NetflixIconButton";
 import Stack from "@mui/material/Stack";
-import MaxLineTypography from "../MaxLineTypography";
+
 import { useGetMoviePopularQuery } from "../../apis/movie";
 import MaturityRate from "../MaturityRate";
 
@@ -83,6 +83,11 @@ export const Trailer = () => {
       playerRef.current.muted(!status);
       setMuted(!status);
     }
+  };
+
+  const handleMoreInfo = () => {
+    navigate(`/${video.id}`);
+    handleClickOpen();
   };
 
   console.log("video trailer", detail);
@@ -211,39 +216,36 @@ export const Trailer = () => {
                       justifyContent: "flex-end",
                     }}
                   >
-                    <MaxLineTypography
-                      variant="h2"
-                      maxLine={1}
-                      color="text.primary"
-                    >
-                      {video?.title}
-                    </MaxLineTypography>
-                    <MaxLineTypography
-                      variant="h5"
-                      maxLine={3}
-                      color="text.primary"
-                    >
-                      {video?.overview}
-                    </MaxLineTypography>
-                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                    <div className="flex flex-col gap-2">
+                      {" "}
+                      <div className="text-xs md:text-4xl text-white md:pb-5">
+                        {video?.title}
+                      </div>
+                      <div className="text-m md:text-lg text-white line-clamp-2 md:line-clamp-3">
+                        {video?.overview}
+                      </div>
+                    </div>
+                    <Stack direction={{ sm: "row" }} spacing={2}>
                       {/* <PlayButton size="large" /> */}
-                      <button
-                        onClick={() => navigate(`/${video.id}/watch`)}
-                        className="bg-white w-32 rounded text-2xl"
-                      >
-                        <div className="flex items-center gap-1 pl-4">
-                          <PlayArrowIcon fontSize="large" />
-                          <span className="font-semibold">Play</span>
-                        </div>
-                      </button>
+                      <div className="flex gap-2 md:gap-5">
+                        <button
+                          onClick={() => navigate(`/${video.id}/watch`)}
+                          className="bg-white md:w-32 rounded text-m md:text-2xl w-28"
+                        >
+                          <div className="flex items-center gap-1 md:pl-2 md:py-2 hover:bg-info">
+                            <PlayArrowIcon fontSize="large" />
+                            <span className="font-semibold">Play</span>
+                          </div>
+                        </button>
 
-                      <MoreInfoButton
-                        size="large"
-                        onClick={() => {
-                          navigate(`/${video.id}`);
-                          handleClickOpen();
-                        }}
-                      />
+                        <div
+                          onClick={handleMoreInfo}
+                          className="w-36 md:w-44 text-m md:text-2xl bg-info text-white flex items-center gap-3 pl-1 md:pl-5 rounded cursor-pointer hover:bg-gray-500"
+                        >
+                          <InfoIcon />
+                          <span>More Info</span>
+                        </div>
+                      </div>
                     </Stack>
                   </Stack>
                 </Box>

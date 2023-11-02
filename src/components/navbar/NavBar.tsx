@@ -25,7 +25,7 @@ const settings = [
   { id: 1, title: "Profile", link: "/" },
   { id: 2, title: "Account", link: "/" },
   { id: 3, title: "Dashboard", link: "/" },
-  { id: 4, title: "Login", link: "/" },
+  { id: 4, title: "Register", link: "/register" },
 ];
 export const NavBar = () => {
   const navigate = useNavigate();
@@ -56,11 +56,11 @@ export const NavBar = () => {
     <AppBar
       sx={{
         background: "black",
-        padding: "0 40px",
         position: "fixed",
         top: "0",
         left: "0",
       }}
+      className="px-1 md:px-10"
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -121,7 +121,7 @@ export const NavBar = () => {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+
           <Typography
             variant="h5"
             noWrap
@@ -140,7 +140,7 @@ export const NavBar = () => {
             <img
               src="\src\assets\images\Logonetflix.png"
               alt="logo"
-              className="w-28 h-9"
+              className="md:w-28 md:h-9 w-16 h-6"
             />
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -165,7 +165,10 @@ export const NavBar = () => {
             >
               {!toggle && <SearchIcon />}
             </IconButton>
-            {toggle && <SearchBox />}
+
+            {toggle && (
+              <SearchBox toggle={toggle} onhandleToggle={handleToggle} />
+            )}
           </div>
 
           <Box sx={{ flexGrow: 0 }}>

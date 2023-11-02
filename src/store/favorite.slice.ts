@@ -23,7 +23,6 @@ const favorSlice = createSlice({
       );
 
       if (!existingMovie) {
-        // Nếu movie chưa tồn tại trong danh sách yêu thích, hãy thêm nó vào danh sách với trạng thái mặc định là true
         state.movies.push({ ...action.payload, addedToFavor: true });
         localStorage.setItem("favorite", JSON.stringify(state.movies));
       }

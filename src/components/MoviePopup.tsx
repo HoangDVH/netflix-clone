@@ -38,9 +38,10 @@ export const MoviePopup = (props: PopProps) => {
   const [isFavorited, setIsFavorited] = useState(movie.addedToFavor);
 
   const handleClickOpen = () => {
-    navigate(`/${movie.id}`);
     setOpen(true);
+    navigate(`/${movie.id}`);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -73,7 +74,7 @@ export const MoviePopup = (props: PopProps) => {
           />
         </div>
         <CardContent>
-          <div className="text-lg absolute top-32 left-1 line-clamp-1">
+          <div className="text-lg absolute top-40 left-0 line-clamp-1">
             <Typography gutterBottom component="div">
               <div className="font-semibold">{movie.title}</div>
             </Typography>

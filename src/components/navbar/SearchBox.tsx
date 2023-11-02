@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty-pattern
 const Search = styled("div")(({}) => ({
@@ -35,14 +35,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-
-export const SearchBox = () => {
+interface SearchProps {
+  toggle: boolean;
+  onhandleToggle: () => void;
+}
+export const SearchBox = (props: SearchProps) => {
+  const { toggle, onhandleToggle } = props;
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const typingTimeoutRef = useRef(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleInputChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const newSearchInput = target.value;
@@ -69,31 +74,36 @@ export const SearchBox = () => {
         searchInputRef.current.removeEventListener("input", handleInputChange);
       }
     };
-  }, []);
+  }, [handleInputChange]);
 
   return (
-    <Search
-      sx={
-        isFocused ? { border: "1px solid white", backgroundColor: "black" } : {}
-      }
-    >
-      <SearchIconWrapper>
-        <SearchIcon />
-      </SearchIconWrapper>
-      <StyledInputBase
-        inputRef={searchInputRef}
-        placeholder="Titles, people, genres"
-        inputProps={{
-          "aria-label": "search",
-          onFocus: () => {
-            setIsFocused(true);
-          },
-          onBlur: () => {
-            setIsFocused(false);
-          },
-        }}
-        value={searchInput}
-      />
-    </Search>
+    <div className="pb-5">
+      {" "}
+      <Search
+        sx={
+          isFocused
+            ? { border: "1px solid white", backgroundColor: "black" }
+            : {}
+        }
+      >
+        <SearchIconWrapper>
+          {toggle && <SearchIcon onClick={onhandleToggle} />}
+        </SearchIconWrapper>
+        <StyledInputBase
+          inputRef={searchInputRef}
+          placeholder="Titles, people, genres"
+          inputProps={{
+            "aria-label": "search",
+            onFocus: () => {
+              setIsFocused(true);
+            },
+            onBlur: () => {
+              setIsFocused(false);
+            },
+          }}
+          value={searchInput}
+        />
+      </Search>
+    </div>
   );
 };
