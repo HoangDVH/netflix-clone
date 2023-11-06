@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { Movie } from "../types/Movie";
 import { IMAGE_URL } from "./VideoSlider";
@@ -37,10 +37,12 @@ export const MoviePopup = (props: PopProps) => {
 
   const [isFavorited, setIsFavorited] = useState(movie.addedToFavor);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true);
-    navigate(`/${movie.id}`);
-  };
+    if (movie && movie.id) {
+      navigate(`/${movie.id}`);
+    }
+  }, [navigate, movie]);
 
   const handleClose = () => {
     setOpen(false);

@@ -5,4 +5,5 @@ export type Account = {
   confirmPassword: string;
   phoneNumber: number;
   rememberMe: boolean;
+  accessToken: string;
 };

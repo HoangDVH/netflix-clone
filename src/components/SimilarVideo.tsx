@@ -1,9 +1,8 @@
-import React from "react";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
+
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
+
 import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
 import { useGetMovieSimilarQuery } from "../apis/movieDetail";
@@ -16,14 +15,13 @@ import AddIcon from "@mui/icons-material/Add";
 export const SimilarVideo = () => {
   const { movieId } = useParams();
 
-  const { data, isFetching } = useGetMovieSimilarQuery(movieId);
-  console.log("si", data);
+  const { data } = useGetMovieSimilarQuery(movieId);
+ 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 ml-14 mr-10 my-10">
       {data?.results.map((item) => (
         <Card key={item.id} sx={{ maxWidth: 345 }}>
           <div className="relative">
-            {" "}
             <CardMedia
               component="img"
               alt="green iguana"

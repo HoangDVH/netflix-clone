@@ -5,14 +5,24 @@ import { Account } from "../types/Account";
 export const loginApi = createApi({
   reducerPath: "movieApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.100.60:61949/api/Account/Auth/Login",
+    baseUrl: "http://192.168.100.60:61949/api/Account",
   }),
   endpoints: (build) => ({
     loginAccount: build.mutation<Account, string>({
       query: (body) => ({
-        url: "",
+        url: "/Auth/Login",
         method: "POST",
-        mode:'cors',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }),
+    }),
+
+    logoutAccount: build.mutation<Account, string>({
+      query: (body) => ({
+        url: "Logout",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -24,4 +34,4 @@ export const loginApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginAccountMutation } = loginApi;
+export const { useLoginAccountMutation,useLogoutAccountMutation } = loginApi;

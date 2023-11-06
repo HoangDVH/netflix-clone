@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,23 +11,25 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+
 import { Link, useNavigate } from "react-router-dom";
 import { SearchBox } from "./SearchBox";
 import SearchIcon from "@mui/icons-material/Search";
+
+import { useDispatch, useSelector } from "react-redux";
+import { logout, selectAuth, setUser } from "../../store/authSlice";
+import { toast } from "react-toastify";
 
 const pages = [
   { id: 1, title: "My List", link: "/favorite" },
   { id: 2, title: "Movie", link: "/" },
   { id: 3, title: "Tv Show", link: "/" },
 ];
-const settings = [
-  { id: 1, title: "Profile", link: "/" },
-  { id: 2, title: "Account", link: "/" },
-  { id: 3, title: "Dashboard", link: "/" },
-  { id: 4, title: "Register", link: "/register" },
-];
+
 export const NavBar = () => {
+  const { accessToken } = useSelector(selectAuth);
+  const distpatch = useDispatch();
+
   const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -52,6 +54,20 @@ export const NavBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleLogOut = () => {
+    distpatch(logout());
+    toast.success('Logout Sucessfully!')
+  };
+
+  useEffect(() => {
+    // Check for accessToken in local storage on initialization
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      distpatch(setUser({ accessToken: user.accessToken }));
+    }
+  }, [distpatch]);
   return (
     <AppBar
       sx={{
@@ -194,13 +210,49 @@ export const NavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting.id} onClick={handleCloseUserMenu}>
+              <MenuItem
+                onClick={handleCloseUserMenu}
+                className="flex flex-col gap-2 text-right"
+              >
+                <Typography textAlign="center">
+                  <Link to="">Profile</Link>
+                </Typography>
+              </MenuItem>
+
+              <MenuItem
+                onClick={handleCloseUserMenu}
+                className="flex flex-col gap-2"
+              >
+                <Typography textAlign="center">
+                  <Link to="">Account</Link>
+                </Typography>
+              </MenuItem>
+
+              <MenuItem
+                onClick={handleCloseUserMenu}
+                className="flex flex-col gap-2"
+              >
+                <Typography textAlign="center">
+                  <Link to="">Dashboard</Link>
+                </Typography>
+              </MenuItem>
+
+              <MenuItem
+                onClick={handleCloseUserMenu}
+                className="flex flex-col gap-2"
+              >
+                {accessToken ? (
                   <Typography textAlign="center">
-                    <Link to={setting.link}>{setting.title}</Link>
+                    <Link to="/browse" onClick={handleLogOut}>
+                      Logout
+                    </Link>
                   </Typography>
-                </MenuItem>
-              ))}
+                ) : (
+                  <Typography textAlign="center">
+                    <Link to="/login">Login</Link>
+                  </Typography>
+                )}
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

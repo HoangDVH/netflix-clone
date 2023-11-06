@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -14,7 +13,6 @@ import { WatchVideoPage } from "./pages/WatchVideoPage.tsx";
 import { MovieListPage } from "./pages/MovieListPage.tsx";
 import { HomePage } from "./pages/HomePage.tsx";
 
-import { Auth0Provider } from "@auth0/auth0-react";
 import { SearchResultPage } from "./pages/SearchResultPage.tsx";
 import { Favorite } from "./components/Favorite.tsx";
 
@@ -22,16 +20,14 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RegisterPage } from "./pages/RegisterPage.tsx";
 import { LoginPage } from "./pages/LoginPage.tsx";
-const domain = import.meta.env.REACT_APP_AUTH0_DOMAIN;
-console.log("domain", domain);
-const clientId = import.meta.env.REACT_APP_CLIENT_ID;
-console.log("clien", clientId);
+import React from "react";
 
 const router = createBrowserRouter([
   {
     path: "/browse",
     element: <MainPage />,
   },
+
   {
     path: "/:movieId",
     element: <MainPage />,
@@ -48,10 +44,16 @@ const router = createBrowserRouter([
     path: "/genre/:title",
     element: <MovieListPage />,
   },
+
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
   {
     path: "/register",
     element: <RegisterPage />,
   },
+
   {
     path: "/search",
     element: <SearchResultPage />,
@@ -60,20 +62,14 @@ const router = createBrowserRouter([
     path: "/favorite",
     element: <Favorite />,
   },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
 ]);
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <React.StrictMode>
-      <Auth0Provider domain={domain} clientId={clientId}>
-        <ThemeProvider theme={createTheme({ palette })}>
-          <RouterProvider router={router} />
-          <ToastContainer />
-        </ThemeProvider>
-      </Auth0Provider>
+      <ThemeProvider theme={createTheme({ palette })}>
+        <RouterProvider router={router} />
+        <ToastContainer />
+      </ThemeProvider>
     </React.StrictMode>
   </Provider>
 );

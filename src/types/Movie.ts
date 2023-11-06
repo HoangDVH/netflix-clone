@@ -41,6 +41,7 @@ export type MovieDetail = {
   videos: { results: Appended_Video[] };
   vote_average: number;
   vote_count: number;
+  results: Movie[];
 };
 
 export type Movie = {

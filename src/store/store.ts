@@ -5,8 +5,11 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import favorReducer from "./favorite.slice";
 // ...
 
+import authReducer from '../store/authSlice'
+
 export const store = configureStore({
   reducer: {
+    auth:authReducer,
     movies: movieReducer,
     [movieApi.reducerPath]: movieApi.reducer,
     favorite: favorReducer,

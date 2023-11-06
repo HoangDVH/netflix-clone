@@ -12,7 +12,7 @@ type FormValues = {
   email: string;
   password: string;
   confirmPassword: string;
-  phoneNumber: number;
+  phoneNumber: string;
 };
 
 const LoginSchema = Yup.object().shape({
@@ -27,12 +27,12 @@ const LoginSchema = Yup.object().shape({
     .min(8, "The Password must be at least 6 ")
     .max(20, "The Password must be  at max 30 characters long")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-])/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?~\\/-])/,
       "Password must contain uppercase letters, lowercase letters, digits and non-alphanumeric character"
     )
     .required("Không được bỏ trống"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Mật khẩu phải trùng khớp")
+    .oneOf([Yup.ref("password"), ""], "Mật khẩu phải trùng khớp")
     .required("Không được bỏ trống"),
   phoneNumber: Yup.string()
     .matches(/^0[0-9]{9,10}$/, "Invalid phone number")
@@ -128,7 +128,6 @@ export const Register = () => {
                     {error?.data.message}
                   </p>
                 </div>
-                
 
                 <div style={{ position: "relative" }}>
                   <input

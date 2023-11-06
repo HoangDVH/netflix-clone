@@ -72,7 +72,6 @@ export const Trailer = () => {
   if (isFetching) {
     return <div>Loading...</div>;
   }
-  console.log("trailer", data);
 
   const handleReady = (player: Player) => {
     playerRef.current = player;
@@ -86,8 +85,10 @@ export const Trailer = () => {
   };
 
   const handleMoreInfo = () => {
-    navigate(`/${video.id}`);
-    handleClickOpen();
+    if (video) {
+      navigate(`/${video.id}`);
+      handleClickOpen();
+    }
   };
 
   console.log("video trailer", detail);
