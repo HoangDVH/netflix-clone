@@ -10,8 +10,6 @@ import { useLoginAccountMutation } from "../apis/login";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
 
-
-
 type FormValues = {
   email: string;
   password: string;
@@ -57,9 +55,16 @@ export const Login = () => {
     if (isSuccess) {
       const accessToken = loginData?.accessToken || "";
       distpatch(setUser({ accessToken: accessToken }));
-      navigate("/browse");
+      if (
+        loginData?.email === "admin@gmail.com" &&
+        loginData.password === "Admin@123"
+      ) {
+        navigate("/admin");
+      } else {
+        navigate("/browse");
+      }
     }
-  }, [distpatch, isSuccess, loginData?.accessToken, navigate]);
+  }, [distpatch, isSuccess, loginData?.accessToken, loginData?.email, loginData?.password, navigate]);
 
   return (
     <div className="bg-[url('https://assets.nflxext.com/ffe/siteui/vlv3/a73c4363-1dcd-4719-b3b1-3725418fd91d/1a5c57fd-7621-42e4-8488-e5ae84fe9ae5/VN-en-20231016-popsignuptwoweeks-perspective_alpha_website_large.jpg')] w-full h-screen bg-auto bg-no-repeat bg-center">

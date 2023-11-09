@@ -5,16 +5,15 @@ import { Account } from "../types/Account";
 export const accountApi = createApi({
   reducerPath: "movieApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.100.60:56367/api/Account/User",
+    baseUrl: "http://192.168.100.60:56367/api/Account",
   }),
   endpoints: (build) => ({
     addAccount: build.mutation<Account[], string>({
       query(body) {
-        return { url: "/Register", method: "POST", body };
+        return { url: "User/Register", method: "POST", body };
       },
     }),
-       
-    
+   
   }),
 });
 
