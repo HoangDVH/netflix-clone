@@ -23,7 +23,7 @@ import { visuallyHidden } from "@mui/utils";
 import {
   useDeleteAccountMutation,
   useGetAccountListQuery,
-  useGetRoleByIdQuery,
+  useGetRoleQuery,
 } from "../../apis/accountUser";
 import ModalAdmin from "./Modal";
 import { useNavigate } from "react-router-dom";
@@ -36,29 +36,6 @@ interface Data {
   roleIds: string;
   button: () => void;
 }
-
-// function createData(
-//   id: string,
-//   email: string,
-//   userName: string,
-//   phoneNumber: string,
-//   userRole: string
-// ): Data {
-//   return {
-//     id,
-//     email,
-//     userName,
-//     phoneNumber,
-//     userRole,
-//   };
-// }
-
-// const rows = [
-//   createData("ad", "Cupcake", "hoang@gmail.com", "adasd", "adad"),
-//   createData("ad", "Cupcake", "hoang@gmail.com", "adasd", "adad"),
-//   createData("ad", "Cupcake", "hoang@gmail.com", "adasd", "adad"),
-//   createData("ad", "Cupcake", "hoang@gmail.com", "adasd", "adad"),
-// ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -264,7 +241,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 export default function AdminTable() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState("");
   const handleClickOpenModal = () => {
@@ -273,11 +250,6 @@ export default function AdminTable() {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
- 
-  
-  
-
-  const { data,refetch } = useGetAccountListQuery();
 
   const [deleteAccount] = useDeleteAccountMutation();
 
@@ -285,12 +257,30 @@ export default function AdminTable() {
     if (deleteId) {
       await deleteAccount(deleteId);
       handleCloseModal();
-      await refetch(); 
+      await refetch();
     }
   };
 
+  const { data, refetch } = useGetAccountListQuery();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const rows = data?.data ?? [];
+
+  //Get Name of Role By ID
+  const { data: dataGetRoleById } = useGetRoleQuery();
+  const renderRoles = (rowRoleIds) => {
+    if (data && dataGetRoleById) {
+      const matchingRoles = rowRoleIds.map((roleId) => {
+        const foundRole = dataGetRoleById.data.find(
+          (role) => role.id === roleId
+        );
+        return foundRole ? foundRole.name : null;
+      });
+
+      return matchingRoles.filter((role) => role !== null).join(", ");
+    }
+    return [];
+  };
+  //End
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("userName");
@@ -426,8 +416,8 @@ export default function AdminTable() {
                       <TableCell align="right" className="!text-black">
                         {row.phoneNumber}
                       </TableCell>
-                      <TableCell align="right" className="!text-black">
-                        {row.roleIds}
+                      <TableCell align="right" className="!text-black w-52">
+                        {renderRoles(row.roleIds)}
                       </TableCell>
                       <TableCell align="right" className="">
                         <div className="flex space-x-6">
@@ -436,7 +426,11 @@ export default function AdminTable() {
                             placement="top"
                             className="group/edit invisible group-hover/item:visible text-slate-600"
                           >
-                            <div onClick={() => navigate(`/admin/user/edit/${row.id}`)}>
+                            <div
+                              onClick={() =>
+                                navigate(`/admin/user/edit/${row.id}`)
+                              }
+                            >
                               <EditIcon />
                             </div>
                           </Tooltip>

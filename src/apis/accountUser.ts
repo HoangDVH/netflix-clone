@@ -43,6 +43,12 @@ export const accountListApi = createApi({
         method: "PUT",
       }),
     }),
+    createNewUser: builder.mutation<AccountListUser, void>({
+      query: () => ({
+        url: "/User",
+        method:"POST",
+      }),
+    }),
   }),
 });
 
@@ -55,4 +61,5 @@ export const {
   useDeleteAccountMutation,
   useGetRoleQuery,
   useEditPhoneNumberMutation,
+  useCreateNewUserMutation
 } = accountListApi;

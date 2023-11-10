@@ -10,11 +10,13 @@ import {
   useEditPhoneNumberMutation,
   useGetAccountByIdQuery,
   useGetAccountListQuery,
-  useGetRoleByIdQuery,
+  useGetRoleQuery,
 } from "../../../apis/accountUser";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
+import useGetRolesByIds from "../../../hooks/useGetNameRoleById";
+
 type FormValues = {
   phoneNumber: string;
 };
@@ -58,26 +60,35 @@ function a11yProps(index: number) {
 }
 
 export const AdminUserEdit = () => {
-  const { data, refetch } = useGetAccountListQuery();
+  const { refetch } = useGetAccountListQuery();
   const navigate = useNavigate();
   const { editId } = useParams();
+
+  //Get Name of Role By ID
   const { data: dataIdAccount } = useGetAccountByIdQuery(editId);
-  const roles = dataIdAccount?.roleIds.map((roleId) => {
-    const roleData = useGetRoleByIdQuery(roleId);
-    return roleData; // Return roleData inside the map function
-  });
-  console.log("name", roles);
+  const { data: dataGetRoleById } = useGetRoleQuery();
+  const renderRoles = () => {
+    if (dataIdAccount && dataGetRoleById) {
+      const matchingRoles = dataIdAccount.roleIds.map((roleId) => {
+        const foundRole = dataGetRoleById.data.find(
+          (role) => role.id === roleId
+        );
+        return foundRole ? foundRole.name : null;
+      });
 
-  // const { data: dataRoleById } = useGetRoleByIdQuery(
-  //   dataIdAccount?.roleIds.map((item) => console.log("id", item))
-  // );
-  // console.log("dataRole", dataRoleById);
+      return matchingRoles.filter((role) => role !== null);
+    }
+    return [];
+  };
+  //End
 
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(EditSchema) });
+
 
   //Edit Phone Number
   const [isPhoneNumberChanged, setPhoneNumberChanged] = React.useState(false);
@@ -92,7 +103,9 @@ export const AdminUserEdit = () => {
       setPhoneNumberValue(dataIdAccount.phoneNumber || "");
     }
   }, [dataIdAccount]);
-  const handlePhoneNumberChange = (event) => {
+  const handlePhoneNumberChange = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setPhoneNumberValue(event.target.value);
     if (!isPhoneNumberChanged) {
       setPhoneNumberChanged(true);
@@ -119,14 +132,14 @@ export const AdminUserEdit = () => {
 
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
   return (
     <form>
       <div className="h-screen">
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl">Edit new user</h2>
+          <h2 className="text-3xl">Edit user</h2>
           <div className="flex gap-2">
             <button
               className={`bg-blue-500 px-3 py-3 rounded flex items-center gap-2 ${
@@ -196,8 +209,15 @@ export const AdminUserEdit = () => {
                   </p>
                 </div>
                 <div className="mt-8">
-                  <p>Selected Roles:</p>
-                  <p className="text-blue-500">da</p>
+                  Selected Roles:
+                  <p className="flex gap-5 mt-2">
+                    {" "}
+                    {renderRoles().map((role, index) => (
+                      <p className="text-blue-600" key={index}>
+                        {role}
+                      </p>
+                    ))}
+                  </p>
                 </div>
               </div>
             </CustomTabPanel>

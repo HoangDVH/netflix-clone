@@ -17,6 +17,7 @@
     "@mui/icons-material": "^5.14.13",
     "@mui/material": "^5.14.13",
     "@mui/styled-engine-sc": "^6.0.0-alpha.1",
+    "@mui/x-data-grid": "^6.18.1",
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^1.5.1",
     "localforage": "^1.10.0",

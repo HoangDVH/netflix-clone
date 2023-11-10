@@ -14,6 +14,7 @@ import { AdminPolicy } from "../components/Admin/AdminPolicy";
 import { AdminPermission } from "../components/Admin/AdminPermission";
 import { AdminHome } from "../components/Admin/AdminHome";
 import { AdminUserEdit } from "../components/Admin/AdminUser/AdminUserEdit";
+import { AdminUserCreate } from "../components/Admin/AdminUser/AdminUserCreate";
 
 export default function useRouteElements() {
   const routeElements = useRoutes([
@@ -83,6 +84,10 @@ export default function useRouteElements() {
         {
           path: "/admin/user/edit/:editId",
           element: <AdminUserEdit />,
+        },
+        {
+          path: "/admin/user/create",
+          element: <AdminUserCreate />,
         },
       ],
     },
