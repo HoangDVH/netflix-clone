@@ -41,3 +41,26 @@ export type Role = {
 export type RoleList = {
   data: Role[];
 };
+
+export type PermissionSet = {
+  id: string;
+  name: string;
+  description: string;
+  sort: number;
+  permissionIdList: string[];
+  roleIdList: string[];
+};
+export type PermissionSetList = {
+  data: PermissionSet[];
+};
+
+export type Permission = {
+  id: string;
+  name: string;
+
+  sort: number;
+  permissionSetIdList: string[];
+};
+export type PermissionList = {
+  data: Permission[];
+};

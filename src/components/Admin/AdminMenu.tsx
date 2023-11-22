@@ -96,7 +96,7 @@ export const AdminMenu = () => {
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
           <AppBar position="fixed" open={open}>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between !bg-blue-600 !text-black">
               <Toolbar>
                 <IconButton
                   color="inherit"
@@ -107,18 +107,23 @@ export const AdminMenu = () => {
                 >
                   <MenuIcon />
                 </IconButton>
-                <div className="flex">
-                  <Typography variant="h6" noWrap component="div">
-                    <img
-                      src="\src\assets\images\Logonetflix.png"
-                      alt="logo"
-                      className="w-20 h-7 cursor-pointer"
-                      onClick={() => navigate("/admin")}
-                    />
+                <div className="flex text-white text-4xl">
+                  <Typography
+                    variant="h5"
+                    noWrap
+                    component="div"
+                    onClick={() => navigate("/admin")}
+                  >
+                    Admin
                   </Typography>
                 </div>
               </Toolbar>
-              <Typography variant="h6" noWrap component="div" className="pr-6">
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                className="pr-6 text-white underline"
+              >
                 Login
               </Typography>
             </div>
@@ -131,6 +136,7 @@ export const AdminMenu = () => {
                 width: drawerWidth,
                 boxSizing: "border-box",
               },
+              backgroundColor: "white",
             }}
             variant="persistent"
             anchor="left"

@@ -9,12 +9,21 @@ import { SearchResultPage } from "../pages/SearchResultPage";
 import { Favorite } from "../components/Favorite";
 import { AdminPage } from "../pages/AdminPage";
 import { AdminUser } from "../components/Admin/AdminUser/AdminUser";
-import { AdminRole } from "../components/Admin/AdminRole";
-import { AdminPolicy } from "../components/Admin/AdminPolicy";
-import { AdminPermission } from "../components/Admin/AdminPermission";
+import { AdminRole } from "../components/Admin/AdminRole/AdminRole";
+import { AdminPolicy } from "../components/Admin/AdminPolicy/AdminPolicy";
+import { AdminPermission } from "../components/Admin/AdminPermission/AdminPermission";
 import { AdminHome } from "../components/Admin/AdminHome";
 import { AdminUserEdit } from "../components/Admin/AdminUser/AdminUserEdit";
 import { AdminUserCreate } from "../components/Admin/AdminUser/AdminUserCreate";
+import { AdminRoleCreate } from "../components/Admin/AdminRole/AdminRoleCreate";
+import { AdminRoleView } from "../components/Admin/AdminRole/AdminRoleView";
+import { AdminRoleEdit } from "../components/Admin/AdminRole/AdminRoleEdit";
+import { AdminPolicyCreate } from "../components/Admin/AdminPolicy/AdminPolicyCreate";
+import { AdminPolicyView } from "../components/Admin/AdminPolicy/AdminPolicyView";
+import { AdminPolicyEdit } from "../components/Admin/AdminPolicy/AdminPolicyEdit";
+import { AdminPermissionCreate } from "../components/Admin/AdminPermission/AdminPermissionCreate";
+import { AdminPermissionView } from "../components/Admin/AdminPermission/AdminPermissionView";
+import { AdminPermissionEdit } from "../components/Admin/AdminPermission/AdminPermissionEdit";
 
 export default function useRouteElements() {
   const routeElements = useRoutes([
@@ -74,12 +83,49 @@ export default function useRouteElements() {
           element: <AdminRole />,
         },
         {
+          path: "/admin/role/view/:idRole",
+          element: <AdminRoleView />,
+        },
+        {
+          path: "/admin/role/edit/:idRole",
+          element: <AdminRoleEdit />,
+        },
+        {
+          
+          path: "/admin/role/create",
+          element: <AdminRoleCreate />,
+        },
+        {
           path: "/admin/policy",
           element: <AdminPolicy />,
         },
         {
+          path: "/admin/policy/create",
+          element: <AdminPolicyCreate />,
+        },
+        {
+          path: "/admin/policy/edit/:idPermission",
+          element: <AdminPolicyEdit />,
+        },
+        {
+          path: "/admin/policy/view/:idPermission",
+          element: <AdminPolicyView />,
+        },
+        {
           path: "/admin/permission",
           element: <AdminPermission />,
+        },
+        {
+          path: "/admin/permission/create",
+          element: <AdminPermissionCreate />,
+        },
+        {
+          path: "/admin/permission/view/:idPer",
+          element: <AdminPermissionView />,
+        },
+        {
+          path: "/admin/permission/edit/:idPer",
+          element: <AdminPermissionEdit />,
         },
         {
           path: "/admin/user/edit/:editId",

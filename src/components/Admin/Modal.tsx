@@ -7,32 +7,25 @@ import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
-
 interface modalProps {
   openModal: boolean;
   handleCloseModal: () => void;
   handleClickOpenModal: () => void;
   deleteId: string;
   handleDelete: () => void;
+  title: string;
 }
 
 export default function ModalAdmin(props: modalProps) {
-  const {
-    openModal,
-    handleClickOpenModal,
-    handleCloseModal,
-    handleDelete,
-  } = props;
+  const { openModal, handleClickOpenModal, handleCloseModal, handleDelete,title } =
+    props;
 
-  
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpenModal}>
-        Delete
-      </Button>
+      <div onClick={handleClickOpenModal}></div>
       <Dialog
         fullScreen={fullScreen}
         open={openModal}
@@ -47,7 +40,7 @@ export default function ModalAdmin(props: modalProps) {
         </DialogTitle>
         <DialogContent className="!bg-white text-black">
           <DialogContentText className="!text-black !text-lg">
-            Are you sure you wish to delete this user?
+            {title}
           </DialogContentText>
         </DialogContent>
         <DialogActions className="!bg-white text-black">

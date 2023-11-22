@@ -1,6 +1,6 @@
 
 export const AdminHome = () => {
   return (
-    <div>Admin Home</div>
+    <div className="h-screen">Welcom to Admin Page</div>
   )
 }

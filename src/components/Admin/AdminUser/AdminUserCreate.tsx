@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import {
+  useCreateNewUserMutation,
   useGetAccountListQuery,
   useGetRoleQuery,
 } from "../../../apis/accountUser";
@@ -14,7 +15,6 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CreateIcon from "@mui/icons-material/Create";
 import { TextField } from "@mui/material";
-import { useAddAccountMutation } from "../../../apis/account";
 import { toast } from "react-toastify";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
@@ -29,6 +29,7 @@ type FormValues = {
   password: string;
   confirmPassword: string;
   phoneNumber: string;
+  roleIds: string[];
 };
 
 const CreateSchema = Yup.object().shape({
@@ -96,10 +97,12 @@ export const AdminUserCreate = () => {
     firstName: role,
   }));
 
+  
+
   const navigate = useNavigate();
 
   const { refetch } = useGetAccountListQuery();
-  const [createNewAccount, { isSuccess }] = useAddAccountMutation();
+  const [createNewAccount, { isSuccess }] = useCreateNewUserMutation();
 
   const {
     register,
@@ -108,7 +111,19 @@ export const AdminUserCreate = () => {
   } = useForm<FormValues>({ resolver: yupResolver(CreateSchema) });
 
   const onSubmit = handleSubmit(async (data) => {
-    await createNewAccount(data);
+    const selectedRoleNames = getSelectedRoleNames();
+
+    // Map selected role names to their corresponding role id
+    const selectedRoleIds = roles
+      .filter((role) => selectedRoleNames.includes(role.name))
+      .map((role) => role.id);
+
+    // Add the selected role ids to the form data
+    data.roleIds = selectedRoleIds;
+
+    // Log the final form data
+    createNewAccount(data)
+
   });
 
   React.useEffect(() => {
@@ -130,12 +145,14 @@ export const AdminUserCreate = () => {
   const handleSelectionModelChange = (selectionModel: string[]) => {
     setSelectedRows(selectionModel);
   };
+  console.log('number',selectedRows)
   const getSelectedRoleNames = () => {
     return selectedRows.map(
       (rowId) => roleNamesWithId[parseInt(rowId, 10) - 1]?.firstName || ""
     );
   };
   //End
+
 
   return (
     <form>
@@ -227,7 +244,7 @@ export const AdminUserCreate = () => {
                   </p>
                 </div>
                 <div className="mt-8">
-                  <p>
+                  <p {...register("roleIds")}>
                     Selected Roles: {getSelectedRoleNames().join(", ")}
                   </p>
                 </div>

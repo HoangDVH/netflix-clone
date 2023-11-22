@@ -23,6 +23,7 @@ import { visuallyHidden } from "@mui/utils";
 import {
   useDeleteAccountMutation,
   useGetAccountListQuery,
+  useGetByEmailQuery,
   useGetRoleQuery,
 } from "../../apis/accountUser";
 import ModalAdmin from "./Modal";
@@ -239,8 +240,13 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     </Toolbar>
   );
 }
-
-export default function AdminTable() {
+interface TableProp {
+  inputChange: string;
+}
+export default function AdminTable(props: TableProp) {
+  const { inputChange } = props;
+  const {data:dataSearch} = useGetByEmailQuery(inputChange)
+  
   const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState("");
@@ -484,6 +490,7 @@ export default function AdminTable() {
         handleCloseModal={handleCloseModal}
         deleteId={deleteId}
         handleDelete={handleDelete}
+        title="Are you sure you wish to delete this user?"
       />
     </div>
   );

@@ -1,14 +1,24 @@
-
-
 import { useNavigate } from "react-router-dom";
 import AdminTable from "../AdminTable";
 
 import ExportFile from "./ExportFile";
 import InputFileUpload from "./InputFileUpload";
 import AddIcon from "@mui/icons-material/Add";
+import { AdminSearch } from "../AdminSearch";
+import { SetStateAction, useState } from "react";
+
 export const AdminUser = () => {
   const navigate = useNavigate()
+  const [inputChange,setInputChange] = useState("")
+  const handleInput = (e: { target: { value: SetStateAction<string>; }; }) => {
+    setInputChange(e.target.value)
+  }
+  console.log('search',inputChange)
 
+
+  const handleSearch = () => {
+   
+  }
   return (
     <div className="w-full h-full">
    
@@ -23,7 +33,8 @@ export const AdminUser = () => {
           </button>
         </div>
       </div>
-      <AdminTable />
+      <AdminSearch onChange={handleInput} />
+      <AdminTable inputChange={inputChange}/>
     
  
     </div>
