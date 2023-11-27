@@ -91,7 +91,6 @@ export const Trailer = () => {
     }
   };
 
-  console.log("video trailer", detail);
   return (
     <>
       return (

@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   AccountList,
   AccountListUser,
+  CurrentUser,
   Permission,
   PermissionList,
   PermissionSet,
@@ -9,6 +10,7 @@ import {
   Role,
   RoleList,
 } from "../types/Account";
+
 
 // Define a service using a base URL and expected endpoints
 export const accountListApi = createApi({
@@ -27,6 +29,19 @@ export const accountListApi = createApi({
         url: `/User/${idAccount}`,
       }),
     }),
+    getCurrentUser: builder.query<CurrentUser, { accessToken: string }>({
+      query: ({ accessToken }) => {
+        return {
+          url: '/User/GetCurrentUser?isDeep=true',
+          headers: {
+            Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+            accept: 'text/plain',
+          },
+        };
+      },
+    }),
+    
+  
     getRoleById: builder.query<Role, string>({
       query: (roleId) => ({
         url: `/Role/${roleId}`,
@@ -131,7 +146,6 @@ export const accountListApi = createApi({
       }),
     }),
 
-
     createNewUser: builder.mutation<AccountListUser, void>({
       query: (body) => ({
         url: "/User",
@@ -226,5 +240,6 @@ export const {
   useGetPermissionSetByIdQuery,
   useEditPermissionSetMutation,
   useSearchRoleByNameQuery,
-  useSearchPermissionByNameQuery
+  useSearchPermissionByNameQuery,
+  useGetCurrentUserQuery
 } = accountListApi;

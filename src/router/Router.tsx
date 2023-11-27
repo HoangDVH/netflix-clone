@@ -1,4 +1,4 @@
-import { useRoutes } from "react-router-dom";
+import { Navigate, useRoutes } from "react-router-dom";
 import { MainPage } from "../pages/MainPage";
 import { WatchVideoPage } from "../pages/WatchVideoPage";
 import { HomePage } from "../pages/HomePage";
@@ -25,11 +25,24 @@ import { AdminPermissionCreate } from "../components/Admin/AdminPermission/Admin
 import { AdminPermissionView } from "../components/Admin/AdminPermission/AdminPermissionView";
 import { AdminPermissionEdit } from "../components/Admin/AdminPermission/AdminPermissionEdit";
 
+const isAuthenticated = () => {
+  const userString = localStorage.getItem("user");
+  
+  if (userString === null) {
+    return false; // No user information found
+  }
+
+  const user = JSON.parse(userString);
+  const accessToken = user ? user.accessToken : null;
+
+  return accessToken !== null && accessToken !== undefined;
+};
+
 export default function useRouteElements() {
   const routeElements = useRoutes([
     {
       path: "/browse",
-      element: <MainPage />,
+      element: isAuthenticated() ? <MainPage /> : <Navigate to="/login" />,
     },
 
     {
@@ -51,7 +64,7 @@ export default function useRouteElements() {
 
     {
       path: "/login",
-      element: <LoginPage />,
+      element: isAuthenticated() ? <Navigate to="/browse" /> : <LoginPage />,
     },
     {
       path: "/register",

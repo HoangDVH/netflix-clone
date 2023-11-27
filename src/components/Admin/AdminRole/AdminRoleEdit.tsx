@@ -2,7 +2,6 @@ import CheckIcon from "@mui/icons-material/Check";
 import { TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import {
-  useCreateNewRoleMutation,
   useEditRoleMutation,
   useGetPermissionSetQuery,
   useGetRoleByIdQuery,
@@ -17,7 +16,6 @@ import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "", width: 70 },
   { field: "name", headerName: "Name", width: 130 },
   { field: "sort", headerName: "Sort", width: 130 },
 ];
@@ -40,8 +38,8 @@ export const AdminRoleEdit = () => {
   const navigate = useNavigate();
   const { data, refetch: refetchPermission } = useGetPermissionSetQuery();
   const permission = data?.data || [];
-  const permissionSetList = permission.map((per, index) => ({
-    id: index + 1,
+  const permissionSetList = permission.map((per) => ({
+    id: per.id,
     name: per.name,
     sort: per.sort,
   }));
@@ -53,8 +51,18 @@ export const AdminRoleEdit = () => {
   };
   const getSelectedRoleNames = () => {
     return selectedRows.map(
-      (rowId) => permissionSetList[parseInt(rowId, 10) - 1]?.name || ""
+      (rowId) => permissionSetList.find((item) => item.id === rowId)?.name || ""
     );
+  };
+
+  useEffect(() => {
+    setSelectedRows(dataGetRole?.permissionSetIds || []);
+  }, [dataGetRole]);
+
+  const handleRemoveSelectedItem = (index: number) => {
+    const updatedSelectedRows = [...selectedRows];
+    updatedSelectedRows.splice(index, 1);
+    setSelectedRows(updatedSelectedRows);
   };
   //End
 
@@ -93,11 +101,10 @@ export const AdminRoleEdit = () => {
       body: data,
     });
   });
-  
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Create new role successfully");
+      toast.success("Edit role successfully");
       refetch();
       refetchGetid();
       refetchPermission();
@@ -149,6 +156,7 @@ export const AdminRoleEdit = () => {
               rows={permissionSetList}
               columns={columns}
               checkboxSelection
+              rowSelectionModel={selectedRows}
               onRowSelectionModelChange={handleSelectionModelChange}
               className="!text-black"
             />
@@ -162,10 +170,18 @@ export const AdminRoleEdit = () => {
                 <div
                   key={index}
                   className="bg-blue-600 text-white px-4 py-3 flex items-center gap-2 rounded-full text-sm mb-2 mt-2"
-                  {...register("permissionSetIds")}
                 >
-                  {permissionSetList[parseInt(permiss, 10) - 1]?.name || ""}
-                  <div className="cursor-pointer">
+                  {/* Use register with appropriate parameters */}
+                  <input
+                    type="hidden"
+                    {...register('permissionSetIds')}
+                    value={permiss}
+                  />
+                  {getSelectedRoleNames()[index]}
+                  <div
+                    className="cursor-pointer text-gray-200"
+                    onClick={() => handleRemoveSelectedItem(index)}
+                  >
                     <HighlightOffIcon />
                   </div>
                 </div>

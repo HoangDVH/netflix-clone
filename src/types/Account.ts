@@ -64,3 +64,23 @@ export type Permission = {
 export type PermissionList = {
   data: Permission[];
 };
+
+export type CurrentUser = {
+  id: string;
+  accessFailedCount: number;
+  concurrencyStamp: string;
+  email: string;
+  emailConfirmed: boolean;
+  lockoutEnabled: boolean;
+  lockoutEnd: string;
+  normalizedEmail: string;
+  normalizedUserName: string;
+  passwordHash: string;
+  phoneNumber: string;
+  phoneNumberConfirmed: boolean;
+  securityStamp: string;
+  twoFactorEnabled: boolean;
+  userName: string;
+  refreshToken: string;
+  roles: Role[];
+};

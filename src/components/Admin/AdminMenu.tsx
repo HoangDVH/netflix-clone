@@ -122,7 +122,8 @@ export const AdminMenu = () => {
                 variant="h6"
                 noWrap
                 component="div"
-                className="pr-6 text-white underline"
+                className="pr-6 text-white underline cursor-pointer"
+                onClick={() => navigate("/login")}
               >
                 Login
               </Typography>
@@ -178,7 +179,7 @@ export const AdminMenu = () => {
                   {openMenu && (
                     <ul className="flex flex-col gap-5 ml-6 w-full cursor-pointer">
                       <li
-                        className="flex items-center hover:bg-slate-500 w-full h-10 gap-x-5"
+                        className="flex items-center w-full h-10 gap-x-5"
                         onClick={() => {
                           navigate("/admin/user");
                         }}
@@ -186,19 +187,19 @@ export const AdminMenu = () => {
                         <SupervisorAccountIcon /> User
                       </li>
                       <li
-                        className="flex items-center  hover:bg-slate-500 w-full h-10  gap-x-5"
+                        className="flex items-center w-full h-10  gap-x-5"
                         onClick={() => navigate("/admin/role")}
                       >
                         <SettingsIcon /> Role
                       </li>
                       <li
-                        className="flex items-center  hover:bg-slate-500 w-full h-10  gap-x-5"
+                        className="flex items-center w-full h-10  gap-x-5"
                         onClick={() => navigate("/admin/policy")}
                       >
                         <PolicyIcon /> Policy
                       </li>
                       <li
-                        className="flex items-center  hover:bg-slate-500 w-full h-10  gap-x-5"
+                        className="flex items-center w-full h-10  gap-x-5"
                         onClick={() => navigate("/admin/permission")}
                       >
                         <KeyIcon /> Permission

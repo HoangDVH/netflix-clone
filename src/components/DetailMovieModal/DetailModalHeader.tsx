@@ -43,9 +43,9 @@ export default function DetailModal(props: DetailModalProp) {
 
   const { movieId } = useParams();
   const navigate = useNavigate();
-  console.log("detailid", movieId);
+
   const { data } = useGetMovieVideoQuery(movieId);
-  console.log("detaidata", data);
+
 
   const playerRef = useRef<Player | null>(null);
   const [muted, setMuted] = useState(true);

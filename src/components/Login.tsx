@@ -9,6 +9,7 @@ import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined
 import { useLoginAccountMutation } from "../apis/login";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
+import { useGetCurrentUserQuery } from "../apis/accountUser";
 
 type FormValues = {
   email: string;
@@ -40,6 +41,10 @@ export const Login = () => {
 
   const [loginAccount, { data: loginData, isSuccess, error, isLoading }] =
     useLoginAccountMutation();
+    const { data: dataGetCurrentUser } =
+    useGetCurrentUserQuery({
+      accessToken: loginData?.accessToken || "",
+    });
 
   const {
     register,
@@ -53,18 +58,21 @@ export const Login = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      const accessToken = loginData?.accessToken || "";
-      distpatch(setUser({ accessToken: accessToken }));
-      if (
-        loginData?.email === "admin@gmail.com" &&
-        loginData.password === "Admin@123"
-      ) {
+      const accessToken = loginData?.accessToken;
+      distpatch(setUser({ accessToken }));
+    }
+  }, [isSuccess, loginData?.accessToken, distpatch]);
+  
+  useEffect(() => {
+    if (dataGetCurrentUser) {
+      if (dataGetCurrentUser.roles?.some((role) => role.name === "Admin")) {
         navigate("/admin");
       } else {
-        navigate("/browse");
+        navigate("/browse"); 
       }
     }
-  }, [distpatch, isSuccess, loginData?.accessToken, loginData?.email, loginData?.password, navigate]);
+  }, [dataGetCurrentUser, navigate]);
+  
 
   return (
     <div className="bg-[url('https://assets.nflxext.com/ffe/siteui/vlv3/a73c4363-1dcd-4719-b3b1-3725418fd91d/1a5c57fd-7621-42e4-8488-e5ae84fe9ae5/VN-en-20231016-popsignuptwoweeks-perspective_alpha_website_large.jpg')] w-full h-screen bg-auto bg-no-repeat bg-center">

@@ -21,7 +21,7 @@ export const MovieDetails = () => {
     return `${hours}h ${minutes}m`;
   };
 
-  console.log("movie", data);
+
   return (
     <div className="my-28 mx-16">
       {data && (

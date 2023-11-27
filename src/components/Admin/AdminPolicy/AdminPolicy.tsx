@@ -25,11 +25,11 @@ export const AdminPolicy = () => {
   const [openActions, setOpenActions] = React.useState<string | null>(null);
   const [openModal, setOpenModal] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState("");
-  const [namePolicy,setName] = useState("")
+  const [namePolicy, setName] = useState("");
   const handleClickOpenModal = (id: string, name: string) => {
     setDeleteId(id);
     setOpenModal(true);
-    setName(name)
+    setName(name);
   };
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -132,18 +132,18 @@ export const AdminPolicy = () => {
                   )}
                 </CardActions>
               </Card>
-              <ModalAdmin
-                openModal={openModal}
-                handleClickOpenModal={handleClickOpenModal}
-                handleCloseModal={handleCloseModal}
-                deleteId={deleteId}
-                handleDelete={handleDelete}
-                title={`Do you really want to delete policy ${namePolicy}? This process cannot be undone.`}
-              />
             </div>
           );
         })}
       </div>
+      <ModalAdmin
+        openModal={openModal}
+        handleClickOpenModal={handleClickOpenModal}
+        handleCloseModal={handleCloseModal}
+        deleteId={deleteId}
+        handleDelete={handleDelete}
+        title={`Do you really want to delete policy ${namePolicy}? This process cannot be undone.`}
+      />
     </div>
   );
 };

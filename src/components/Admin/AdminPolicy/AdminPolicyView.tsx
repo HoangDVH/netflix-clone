@@ -35,7 +35,7 @@ export const AdminPolicyView = () => {
 
   //End
 
-  const {refetch:refetchPermissionSet} = useGetPermissionSetQuery()
+  const { refetch: refetchPermissionSet } = useGetPermissionSetQuery();
   //Open Modal and Delete
   const [openModal, setOpenModal] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState("");
@@ -60,13 +60,13 @@ export const AdminPolicyView = () => {
     if (isSuccess) {
       toast.success("Delete successfully");
       refetchPermissionSet();
-      navigate('/admin/policy')
+      navigate("/admin/policy");
     }
-  },[isSuccess, navigate, refetchPermissionSet]);
+  }, [isSuccess, navigate, refetchPermissionSet]);
   ///
 
   return (
-    <div className="h-screen">
+    <div className="h-full">
       <div className="flex items-center justify-between">
         <h1 className="text-4xl">{dataGetPerById?.name}</h1>
         <div className="flex items-center gap-2">
@@ -77,7 +77,10 @@ export const AdminPolicyView = () => {
             <EditIcon />
             EDIT
           </button>
-          <button className="bg-red-500 text-white px-4 py-3 flex items-center gap-2 rounded"  onClick={() => handleClickOpenModal(dataGetPerById?.id)}>
+          <button
+            className="bg-red-500 text-white px-4 py-3 flex items-center gap-2 rounded"
+            onClick={() => handleClickOpenModal(dataGetPerById?.id)}
+          >
             <DeleteIcon />
             DELETE
           </button>

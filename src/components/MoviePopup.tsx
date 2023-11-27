@@ -31,7 +31,7 @@ interface PopProps {
 }
 export const MoviePopup = (props: PopProps) => {
   const { movie } = props;
-  console.log("movie", movie);
+
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
