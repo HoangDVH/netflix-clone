@@ -113,7 +113,7 @@ export const AdminPolicy = () => {
                       className="flex gap-4 !text-white !text-m pt-8"
                     >
                       <div className="bg-blue-600 px-3 py-2 rounded-3xl">
-                        Permissionset ({per.permissionIdList.length})
+                        Permissionset ({per.permissions.length})
                       </div>
                     </Typography>
                   </CardContent>
@@ -147,3 +147,9 @@ export const AdminPolicy = () => {
     </div>
   );
 };
+
+
+
+
+
+

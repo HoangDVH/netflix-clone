@@ -7,6 +7,8 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { useAddAccountMutation } from "../apis/account";
 import { toast } from "react-toastify";
+
+
 type FormValues = {
   name: string;
   email: string;
@@ -44,7 +46,7 @@ export const Register = () => {
 
   const navigate = useNavigate();
 
-  const [addAccount, { isSuccess: isRegisterSucess, isError, error }] =
+  const [addAccount, { isSuccess: isRegisterSucess, error }] =
     useAddAccountMutation();
 
   const {
@@ -56,9 +58,6 @@ export const Register = () => {
   const onSubmit = handleSubmit(async (data) => {
     await addAccount(data);
   });
-
-  console.log(isError);
-  console.log(error);
 
   useEffect(() => {
     if (isRegisterSucess) {
@@ -117,16 +116,18 @@ export const Register = () => {
                     {errors?.email && errors.email.message}
                   </p>
 
-                  <p
-                    style={{
-                      position: "absolute",
-                      top: "100%",
-                      marginTop: "0.25rem",
-                    }}
-                    className="text-error text-xs"
-                  >
-                    {error?.data.message}
-                  </p>
+              
+                    <p
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        marginTop: "0.25rem",
+                      }}
+                      className="text-error text-xs"
+                    >
+                      {error?.data.message}
+                    </p>
+                  
                 </div>
 
                 <div style={{ position: "relative" }}>

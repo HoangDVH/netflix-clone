@@ -9,7 +9,7 @@ import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined
 import { useLoginAccountMutation } from "../apis/login";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
-import { useGetCurrentUserQuery } from "../apis/accountUser";
+
 
 type FormValues = {
   email: string;
@@ -41,10 +41,7 @@ export const Login = () => {
 
   const [loginAccount, { data: loginData, isSuccess, error, isLoading }] =
     useLoginAccountMutation();
-    const { data: dataGetCurrentUser } =
-    useGetCurrentUserQuery({
-      accessToken: loginData?.accessToken || "",
-    });
+   
 
   const {
     register,
@@ -63,15 +60,7 @@ export const Login = () => {
     }
   }, [isSuccess, loginData?.accessToken, distpatch]);
   
-  useEffect(() => {
-    if (dataGetCurrentUser) {
-      if (dataGetCurrentUser.roles?.some((role) => role.name === "Admin")) {
-        navigate("/admin");
-      } else {
-        navigate("/browse"); 
-      }
-    }
-  }, [dataGetCurrentUser, navigate]);
+  
   
 
   return (

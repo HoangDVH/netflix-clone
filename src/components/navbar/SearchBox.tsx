@@ -44,7 +44,7 @@ export const SearchBox = (props: SearchProps) => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const typingTimeoutRef = useRef(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null); 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

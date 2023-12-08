@@ -36,6 +36,7 @@ interface Data {
   phoneNumber: string;
   roleIds: string;
   button: () => void;
+  roles: string[];
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -245,8 +246,8 @@ interface TableProp {
 }
 export default function AdminTable(props: TableProp) {
   const { inputChange } = props;
-  const {data:dataSearch} = useGetByEmailQuery(inputChange)
-  
+  const { data: dataSearch } = useGetByEmailQuery(inputChange);
+
   const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState("");
@@ -271,22 +272,6 @@ export default function AdminTable(props: TableProp) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const rows = data?.data ?? [];
 
-  //Get Name of Role By ID
-  const { data: dataGetRoleById } = useGetRoleQuery();
-  const renderRoles = (rowRoleIds) => {
-    if (data && dataGetRoleById) {
-      const matchingRoles = rowRoleIds.map((roleId) => {
-        const foundRole = dataGetRoleById.data.find(
-          (role) => role.id === roleId
-        );
-        return foundRole ? foundRole.name : null;
-      });
-
-      return matchingRoles.filter((role) => role !== null).join(", ");
-    }
-    return [];
-  };
-  //End
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("userName");
@@ -423,7 +408,7 @@ export default function AdminTable(props: TableProp) {
                         {row.phoneNumber}
                       </TableCell>
                       <TableCell align="right" className="!text-black w-52">
-                        {renderRoles(row.roleIds)}
+                        {row.roles.map((role) => role.name).join(", ")}
                       </TableCell>
                       <TableCell align="right" className="">
                         <div className="flex space-x-6">

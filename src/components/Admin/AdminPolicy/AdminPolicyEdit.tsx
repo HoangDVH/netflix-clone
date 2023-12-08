@@ -16,7 +16,6 @@ import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "", width: 70 },
   { field: "name", headerName: "Name", width: 130 },
   { field: "sort", headerName: "Sort", width: 130 },
 ];
@@ -40,6 +39,7 @@ export const AdminPolicyEdit = () => {
 
   const { data: dataGetPermissionSet } =
     useGetPermissionSetByIdQuery(idPermission);
+  const { refetch: refetchPermissionSetList } = useGetPermissionSetQuery();
 
   //edit name role
   const [editedName, setEditedName] = useState(
@@ -58,10 +58,11 @@ export const AdminPolicyEdit = () => {
   };
 
   const { data, refetch: refetchPermission } = useGetPermissionQuery();
-  const { refetch: refetchPermissionSet } = useGetPermissionSetByIdQuery(idPermission)
+  const { refetch: refetchPermissionSet } =
+    useGetPermissionSetByIdQuery(idPermission);
   const permission = data?.data || [];
   const permissionSetList = permission.map((per, index) => ({
-    id: index + 1,
+    id: per.id,
     name: per.name,
     sort: per.sort,
   }));
@@ -71,11 +72,29 @@ export const AdminPolicyEdit = () => {
   const handleSelectionModelChange = (selectionModel: string[]) => {
     setSelectedRows(selectionModel);
   };
+  console.log("role", selectedRows);
   const getSelectedRoleNames = () => {
-    return selectedRows.map(
-      (rowId) => permissionSetList[parseInt(rowId, 10) - 1]?.name || ""
-    );
+    const selectedNames = permissionSetList
+      .filter((permissionSet) => selectedRows.includes(permissionSet.id))
+      .map((permissionSet) => permissionSet.name);
+
+    return selectedNames;
   };
+
+  useEffect(() => {
+    setSelectedRows(
+      dataGetPermissionSet?.permissions.map(
+        (permissionSet) => permissionSet.id
+      ) || []
+    );
+  }, [dataGetPermissionSet]);
+
+  const handleRemoveSelectedItem = (index: number) => {
+    const updatedSelectedRows = [...selectedRows];
+    updatedSelectedRows.splice(index, 1);
+    setSelectedRows(updatedSelectedRows);
+  };
+
   //End
 
   const {
@@ -93,13 +112,7 @@ export const AdminPolicyEdit = () => {
   const [editPermissionSet, { isSuccess }] = useEditPermissionSetMutation();
 
   const onSubmit = handleSubmit(async (data) => {
-    const selectedRoleNames = getSelectedRoleNames();
-    const selectedRoleIds = permission
-      .filter((role) => selectedRoleNames.includes(role.name))
-      .map((role) => role.id);
-
-    // Add the selected role ids to the form data
-    data.permissionIdList = selectedRoleIds;
+    data.permissionIdList = selectedRows;
     await editPermissionSet({
       idPer: idPermission || "",
       body: data,
@@ -109,10 +122,18 @@ export const AdminPolicyEdit = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Edited successfully");
+      refetchPermissionSetList();
       refetchPermissionSet();
       navigate(`/admin/policy/view/${idPermission}`);
     }
-  }, [idPermission, isSuccess, navigate, refetchPermission, refetchPermissionSet]);
+  }, [
+    idPermission,
+    isSuccess,
+    navigate,
+    refetchPermission,
+    refetchPermissionSet,
+    refetchPermissionSetList,
+  ]);
 
   return (
     <form>
@@ -143,7 +164,10 @@ export const AdminPolicyEdit = () => {
             >
               <CheckIcon /> SAVE
             </button>
-            <button className="bg-gray-400 text-white px-4 py-2 rounded font-semibold" onClick={() => navigate('/admin/policy')}>
+            <button
+              className="bg-gray-400 text-white px-4 py-2 rounded font-semibold"
+              onClick={() => navigate("/admin/policy")}
+            >
               CANCEL
             </button>
           </div>
@@ -172,6 +196,7 @@ export const AdminPolicyEdit = () => {
               rows={permissionSetList}
               columns={columns}
               checkboxSelection
+              rowSelectionModel={selectedRows}
               onRowSelectionModelChange={handleSelectionModelChange}
               className="!text-black"
             />
@@ -181,14 +206,22 @@ export const AdminPolicyEdit = () => {
               Selected Permissions ({selectedRows.length}):
             </p>
             <div className="flex gap-2 flex-wrap">
-              {selectedRows.map((permiss, index) => (
+              {getSelectedRoleNames().map((name, index) => (
                 <div
                   key={index}
                   className="bg-blue-600 text-white px-4 py-3 flex items-center gap-2 rounded-full text-sm mb-2 mt-2"
-                  {...register("permissionIdList")}
                 >
-                  {permissionSetList[parseInt(permiss, 10) - 1]?.name || ""}
-                  <div className="cursor-pointer">
+                  {/* Sử dụng register với các tham số phù hợp */}
+                  <input
+                    type="hidden"
+                    {...register("permissionSetIds")}
+                    value={name}
+                  />
+                  {name}
+                  <div
+                    className="cursor-pointer text-gray-200"
+                    onClick={() => handleRemoveSelectedItem(index)}
+                  >
                     <HighlightOffIcon />
                   </div>
                 </div>

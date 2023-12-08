@@ -13,7 +13,7 @@ import { NavBar } from "./navbar/NavBar";
 export const Favorite = () => {
   const [hoveredMovie, setHoveredMovie] = useState<Movie | null>(null);
   const favorItems = useSelector((state: RootState) => state.favorite.movies);
-  console.log("favor", favorItems);
+  
 
   return (
     <>

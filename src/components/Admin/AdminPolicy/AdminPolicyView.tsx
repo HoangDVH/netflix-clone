@@ -66,7 +66,7 @@ export const AdminPolicyView = () => {
   ///
 
   return (
-    <div className="h-full">
+    <div className="h-screen">
       <div className="flex items-center justify-between">
         <h1 className="text-4xl">{dataGetPerById?.name}</h1>
         <div className="flex items-center gap-2">
@@ -98,7 +98,7 @@ export const AdminPolicyView = () => {
             </tr>
           </thead>
           <tbody className="">
-            {renderRoles().map((foundRole, index) => (
+            {dataGetPerById?.permissions.map((foundRole, index) => (
               <tr key={index}>
                 <td className="pl-24 py-4">{foundRole?.name}</td>
                 <td className="px-2 py-4">{foundRole?.sort}</td>

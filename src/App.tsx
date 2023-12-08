@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     distpatch(setUser(user));
-  }, []);
+  }, [distpatch, user]);
 
   return <> {routeElements}</>;
 }

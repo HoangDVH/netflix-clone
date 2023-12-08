@@ -24,6 +24,11 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 import { Outlet, useNavigate } from "react-router-dom";
 import { Breadcrumbs } from "./Breadcrumbs";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, selectAuth } from "../../store/authSlice";
+import { toast } from "react-toastify";
+
+import { useGetCurrentUserQuery } from "../../apis/accountUser";
 
 const drawerWidth = 240;
 
@@ -77,6 +82,17 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export const AdminMenu = () => {
+  const { accessToken, isLogin } = useSelector(selectAuth);
+  const distpatch = useDispatch();
+  const handleLogOut = () => {
+    distpatch(logout());
+    toast.success("Logout Sucessfully!");
+  };
+
+  const { data: dataGetCurrentUser } = useGetCurrentUserQuery({
+    accessToken: accessToken || "",
+  });
+
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
@@ -118,15 +134,42 @@ export const AdminMenu = () => {
                   </Typography>
                 </div>
               </Toolbar>
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                className="pr-6 text-white underline cursor-pointer"
-                onClick={() => navigate("/login")}
-              >
-                Login
-              </Typography>
+              {isLogin ? (
+                <div className="flex gap-3">
+                  {dataGetCurrentUser ? (
+                    <Typography
+                      variant="h6"
+                      noWrap
+                      component="div"
+                      className="pr-6 text-white underline"
+                    >
+                      Hello, {dataGetCurrentUser.userName}!
+                    </Typography>
+                  ) : (
+                    <Typography></Typography>
+                  )}
+
+                  <Typography
+                    variant="h6"
+                    noWrap
+                    component="div"
+                    className="pr-6 text-white underline cursor-pointer"
+                    onClick={handleLogOut}
+                  >
+                    Logout
+                  </Typography>
+                </div>
+              ) : (
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  className="pr-6 text-white underline cursor-pointer"
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </Typography>
+              )}
             </div>
           </AppBar>
           <Drawer

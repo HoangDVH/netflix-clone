@@ -5,10 +5,12 @@ import { RootState } from "./store";
 
 export interface AuthState {
   accessToken: string | null;
+  isLogin: boolean;
 }
 
 const initialState: AuthState = {
   accessToken: null,
+  isLogin: false,
 };
 
 export const authSlice = createSlice({
@@ -24,10 +26,12 @@ export const authSlice = createSlice({
       );
 
       state.accessToken = action.payload.accessToken;
+      state.isLogin = true;
     },
     logout: (state) => {
       localStorage.removeItem("user");
       state.accessToken = null;
+      state.isLogin = false;
     },
   },
 });

@@ -8,9 +8,9 @@ import {
   PermissionSet,
   PermissionSetList,
   Role,
+  RoleEditList,
   RoleList,
 } from "../types/Account";
-
 
 // Define a service using a base URL and expected endpoints
 export const accountListApi = createApi({
@@ -21,7 +21,7 @@ export const accountListApi = createApi({
   endpoints: (builder) => ({
     getAccountList: builder.query<AccountListUser, void>({
       query: () => ({
-        url: "/User",
+        url: "/User?IsDeep=true",
       }),
     }),
     getAccountById: builder.query<AccountList, void>({
@@ -32,24 +32,23 @@ export const accountListApi = createApi({
     getCurrentUser: builder.query<CurrentUser, { accessToken: string }>({
       query: ({ accessToken }) => {
         return {
-          url: '/User/GetCurrentUser?isDeep=true',
+          url: "/User/GetCurrentUser?isDeep=true",
           headers: {
             Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
-            accept: 'text/plain',
+            accept: "text/plain",
           },
         };
       },
     }),
-    
-  
+
     getRoleById: builder.query<Role, string>({
       query: (roleId) => ({
-        url: `/Role/${roleId}`,
+        url: `/Role/${roleId}?isDeep=true`,
       }),
     }),
     getRole: builder.query<RoleList, string>({
       query: () => ({
-        url: "/Role",
+        url: "/Role?IsDeep=true",
       }),
     }),
     searchRoleByName: builder.query<RoleList, string>({
@@ -108,7 +107,7 @@ export const accountListApi = createApi({
         body: JSON.stringify(body),
       }),
     }),
-    editRole: builder.mutation<RoleList, { idRole: string; body: RoleList }>({
+    editRole: builder.mutation<RoleList, { idRole: string; body: RoleEditList }>({
       query: ({ idRole, body }) => ({
         url: `/Role/${idRole}`,
         method: "PUT",
@@ -176,6 +175,11 @@ export const accountListApi = createApi({
         url: "/Permission",
       }),
     }),
+    getPermissionByUser: builder.query<string[], { id: string }>({
+      query: ({id}) => ({
+        url: `/User/GetAllPermissions?userId=${id}`,
+      }),
+    }),
     getPermissionById: builder.query<Permission, string>({
       query: (idPer) => ({
         url: `/Permission/${idPer}?isDeep=true`,
@@ -241,5 +245,6 @@ export const {
   useEditPermissionSetMutation,
   useSearchRoleByNameQuery,
   useSearchPermissionByNameQuery,
-  useGetCurrentUserQuery
+  useGetCurrentUserQuery,
+  useGetPermissionByUserQuery
 } = accountListApi;

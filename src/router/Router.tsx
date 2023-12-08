@@ -24,14 +24,18 @@ import { AdminPolicyEdit } from "../components/Admin/AdminPolicy/AdminPolicyEdit
 import { AdminPermissionCreate } from "../components/Admin/AdminPermission/AdminPermissionCreate";
 import { AdminPermissionView } from "../components/Admin/AdminPermission/AdminPermissionView";
 import { AdminPermissionEdit } from "../components/Admin/AdminPermission/AdminPermissionEdit";
+import { useGetCurrentUserQuery} from "../apis/accountUser";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../store/authSlice";
+
+import { LoadingSpiner } from "../components/LoadingSpiner";
 
 const isAuthenticated = () => {
   const userString = localStorage.getItem("user");
-  
+
   if (userString === null) {
     return false; // No user information found
   }
-
   const user = JSON.parse(userString);
   const accessToken = user ? user.accessToken : null;
 
@@ -39,12 +43,27 @@ const isAuthenticated = () => {
 };
 
 export default function useRouteElements() {
+  const { accessToken } = useSelector(selectAuth);
+  const { data: dataGetCurrentUser, isFetching } = useGetCurrentUserQuery({
+    accessToken: accessToken || "",
+  });
+  if (isFetching) {
+    return <LoadingSpiner />; // You can replace this with your loading indicator
+  }
+
+  const isAdmin = dataGetCurrentUser?.roles?.some(
+    (role) => role.name === "Admin"
+  );
+
   const routeElements = useRoutes([
+    {
+      path: "/loading",
+      element: <LoadingSpiner />,
+    },
     {
       path: "/browse",
       element: isAuthenticated() ? <MainPage /> : <Navigate to="/login" />,
     },
-
     {
       path: "/:movieId",
       element: <MainPage />,
@@ -64,7 +83,15 @@ export default function useRouteElements() {
 
     {
       path: "/login",
-      element: isAuthenticated() ? <Navigate to="/browse" /> : <LoginPage />,
+      element: isAuthenticated() ? (
+        isAdmin ? (
+          <Navigate to="/admin" />
+        ) : (
+          <Navigate to="/browse" />
+        )
+      ) : (
+        <LoginPage />
+      ),
     },
     {
       path: "/register",
@@ -81,7 +108,15 @@ export default function useRouteElements() {
     },
     {
       path: "/admin",
-      element: <AdminPage />,
+      element: isAuthenticated() ? (
+        isAdmin ? (
+          <AdminPage />
+        ) : (
+          <Navigate to="/browse" />
+        )
+      ) : (
+        <LoginPage />
+      ),
       children: [
         {
           path: "/admin",
@@ -104,7 +139,6 @@ export default function useRouteElements() {
           element: <AdminRoleEdit />,
         },
         {
-          
           path: "/admin/role/create",
           element: <AdminRoleCreate />,
         },

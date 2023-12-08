@@ -45,6 +45,7 @@ export type MovieDetail = {
 };
 
 export type Movie = {
+  key: string;
   addedToFavor: boolean;
   poster_path: string | null;
   adult: boolean;

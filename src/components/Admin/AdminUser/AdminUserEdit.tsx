@@ -98,7 +98,7 @@ export const AdminUserEdit = () => {
     firstName: role,
   }));
   //Number of checkboxes selected
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+
   const handleSelectionModelChange = (selectionModel: string[]) => {
     setSelectedRows(selectionModel);
   };
@@ -210,6 +210,13 @@ export const AdminUserEdit = () => {
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  React.useEffect(() => {
+    setSelectedRows(dataIdAccount?.roles.map((role) => role.id) || []);
+  }, [dataIdAccount?.roles, roles]);
+
+  console.log('row',selectedRows)
 
   return (
     <form>
@@ -327,6 +334,7 @@ export const AdminUserEdit = () => {
                   }}
                   pageSizeOptions={[10, 15]}
                   checkboxSelection
+                  rowSelectionModel={selectedRows}
                   onRowSelectionModelChange={handleSelectionModelChange}
                   // rowSelectionModel={getInitialSelection()}
                   className="!text-black"

@@ -95,7 +95,7 @@ export const AdminRoleView = () => {
 
   const renderRoles = () => {
     if (dataGetIdRole && dataGetPer) {
-      const matchingRoles = dataGetIdRole.permissionSetIds.map((perId) => {
+      const matchingRoles = dataGetIdRole.permissionSets.map((perId) => {
         return dataGetPer.data.find((role) => role.id === perId) || null;
       });
 
@@ -155,7 +155,7 @@ export const AdminRoleView = () => {
                 </tr>
               </thead>
               <tbody className="">
-                {renderRoles().map((foundRole, index) => (
+                {dataGetIdRole?.permissionSets.map((foundRole, index) => (
                   <tr key={index}>
                     <td className="pl-24 py-4">{foundRole.name}</td>
                     <td className="px-2 py-4">{foundRole.sort}</td>

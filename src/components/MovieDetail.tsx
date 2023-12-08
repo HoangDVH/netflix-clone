@@ -9,7 +9,7 @@ export const MovieDetails = () => {
   const { movieId } = useParams();
   const navigate = useNavigate();
 
-  const { data, isFetching } = useGetMovieDetailQuery(movieId);
+  const { data, isFetching } = useGetMovieDetailQuery(movieId );
 
   if (isFetching) {
     return <div>Loading...</div>;

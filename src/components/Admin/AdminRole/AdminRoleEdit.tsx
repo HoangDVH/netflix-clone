@@ -49,14 +49,20 @@ export const AdminRoleEdit = () => {
   const handleSelectionModelChange = (selectionModel: string[]) => {
     setSelectedRows(selectionModel);
   };
+
   const getSelectedRoleNames = () => {
-    return selectedRows.map(
-      (rowId) => permissionSetList.find((item) => item.id === rowId)?.name || ""
-    );
+    const selectedNames = permissionSetList
+      .filter((permissionSet) => selectedRows.includes(permissionSet.id))
+      .map((permissionSet) => permissionSet.name);
+
+    return selectedNames;
   };
 
   useEffect(() => {
-    setSelectedRows(dataGetRole?.permissionSetIds || []);
+    setSelectedRows(
+      dataGetRole?.permissionSets.map((permissionSet) => permissionSet.id) ||
+        []
+    );
   }, [dataGetRole]);
 
   const handleRemoveSelectedItem = (index: number) => {
@@ -89,17 +95,12 @@ export const AdminRoleEdit = () => {
   const { refetch } = useGetRoleQuery();
 
   const onSubmit = handleSubmit(async (data) => {
-    const selectedRoleNames = getSelectedRoleNames();
-    const selectedRoleIds = permission
-      .filter((role) => selectedRoleNames.includes(role.name))
-      .map((role) => role.id);
-
-    // Add the selected role ids to the form data
-    data.permissionSetIds = selectedRoleIds;
+    data.permissionSetIds = selectedRows;
     await editRole({
       idRole: idRole || "",
       body: data,
     });
+    console.log("data", data);
   });
 
   useEffect(() => {
@@ -111,6 +112,8 @@ export const AdminRoleEdit = () => {
       navigate(`/admin/role/view/${idRole}`);
     }
   }, [idRole, isSuccess, navigate, refetch, refetchGetid, refetchPermission]);
+
+  
 
   return (
     <form>
@@ -166,18 +169,18 @@ export const AdminRoleEdit = () => {
               Selected Permissions ({selectedRows.length}):
             </p>
             <div className="flex gap-2 flex-wrap">
-              {selectedRows.map((permiss, index) => (
+              {getSelectedRoleNames().map((name, index) => (
                 <div
                   key={index}
                   className="bg-blue-600 text-white px-4 py-3 flex items-center gap-2 rounded-full text-sm mb-2 mt-2"
                 >
-                  {/* Use register with appropriate parameters */}
+                  {/* Sử dụng register với các tham số phù hợp */}
                   <input
                     type="hidden"
-                    {...register('permissionSetIds')}
-                    value={permiss}
+                    {...register("permissionSetIds")}
+                    value={name}
                   />
-                  {getSelectedRoleNames()[index]}
+                  {name}
                   <div
                     className="cursor-pointer text-gray-200"
                     onClick={() => handleRemoveSelectedItem(index)}

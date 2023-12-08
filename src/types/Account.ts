@@ -4,9 +4,17 @@ export type Account = {
   email: string;
   password: string;
   confirmPassword: string;
-  phoneNumber: number;
+  phoneNumber: string;
   rememberMe: boolean;
   accessToken: string;
+};
+
+export type Register = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phoneNumber: string;
 };
 
 export type AccountList = {
@@ -25,7 +33,7 @@ export type AccountList = {
   securityStamp: string | null;
   twoFactorEnabled: boolean;
   userName: string;
-  roleIds: string[];
+  roles: string[];
 };
 
 export type AccountListUser = {
@@ -35,10 +43,20 @@ export type AccountListUser = {
 export type Role = {
   id: string;
   name: string;
-  permissionSetIds: string;
+  permissionSets: string;
   userIds: string;
 };
 export type RoleList = {
+  data: Role[];
+};
+
+export type RoleEdit = {
+  id: string;
+  name: string;
+  permissionSetIds: string;
+  userIds: string;
+};
+export type RoleEditList = {
   data: Role[];
 };
 
@@ -47,7 +65,7 @@ export type PermissionSet = {
   name: string;
   description: string;
   sort: number;
-  permissionIdList: string[];
+  permissions: string[];
   roleIdList: string[];
 };
 export type PermissionSetList = {
@@ -83,4 +101,11 @@ export type CurrentUser = {
   userName: string;
   refreshToken: string;
   roles: Role[];
+};
+
+export type Error = {
+  message: string;
+};
+export type ErrorList = {
+  data: Error[];
 };
