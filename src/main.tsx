@@ -13,12 +13,14 @@ import "react-toastify/dist/ReactToastify.css";
 import React from "react";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
+import Notification from "./components/Notification/Notification.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
         <ThemeProvider theme={createTheme({ palette })}>
+          <Notification/>
           <App />
           <ToastContainer />
         </ThemeProvider>
