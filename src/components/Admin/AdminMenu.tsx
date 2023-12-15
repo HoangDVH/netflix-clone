@@ -186,73 +186,76 @@ export const AdminMenu = () => {
             anchor="left"
             open={open}
           >
-            <DrawerHeader>
-              <IconButton onClick={handleDrawerClose}>
-                {theme.direction === "ltr" ? (
-                  <ChevronLeftIcon />
-                ) : (
-                  <ChevronRightIcon />
-                )}
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            <List>
-              <ul className="px-5 py-3 flex flex-col gap-6 w-full">
-                <li>
-                  <div
-                    className="flex items-center gap-4 cursor-pointer hover:bg-slate-500 w-full h-10"
-                    onClick={() => navigate("/admin")}
-                  >
-                    <HomeIcon />
-                    <span>Home</span>
-                  </div>
-                </li>
-                <li>
-                  <div
-                    className="flex justify-between cursor-pointer pb-4"
-                    onClick={() => setOpenMenu(!openMenu)}
-                  >
-                    <div>
-                      <div className="flex items-center gap-4">
-                        <ManageAccountsIcon /> Account
-                      </div>
-                    </div>
-                    {openMenu ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-                  </div>
-                  {openMenu && (
-                    <ul className="flex flex-col gap-5 ml-6 w-full cursor-pointer">
-                      <li
-                        className="flex items-center w-full h-10 gap-x-5"
-                        onClick={() => {
-                          navigate("/admin/user");
-                        }}
-                      >
-                        <SupervisorAccountIcon /> User
-                      </li>
-                      <li
-                        className="flex items-center w-full h-10  gap-x-5"
-                        onClick={() => navigate("/admin/role")}
-                      >
-                        <SettingsIcon /> Role
-                      </li>
-                      <li
-                        className="flex items-center w-full h-10  gap-x-5"
-                        onClick={() => navigate("/admin/policy")}
-                      >
-                        <PolicyIcon /> Policy
-                      </li>
-                      <li
-                        className="flex items-center w-full h-10  gap-x-5"
-                        onClick={() => navigate("/admin/permission")}
-                      >
-                        <KeyIcon /> Permission
-                      </li>
-                    </ul>
+            <div className="!bg-white !text-gray-600">
+              {" "}
+              <DrawerHeader>
+                <IconButton onClick={handleDrawerClose}>
+                  {theme.direction === "ltr" ? (
+                    <ChevronLeftIcon />
+                  ) : (
+                    <ChevronRightIcon />
                   )}
-                </li>
-              </ul>
-            </List>
-            <Divider />
+                </IconButton>
+              </DrawerHeader>
+              <Divider />
+              <List>
+                <ul className="px-5 py-3 flex flex-col gap-6 w-full">
+                  <li>
+                    <div
+                      className="flex items-center gap-4 cursor-pointer hover:bg-slate-500 w-full h-10"
+                      onClick={() => navigate("/admin")}
+                    >
+                      <HomeIcon />
+                      <span>Home</span>
+                    </div>
+                  </li>
+                  <li>
+                    <div
+                      className="flex justify-between cursor-pointer pb-4"
+                      onClick={() => setOpenMenu(!openMenu)}
+                    >
+                      <div>
+                        <div className="flex items-center gap-4">
+                          <ManageAccountsIcon /> Account
+                        </div>
+                      </div>
+                      {openMenu ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                    </div>
+                    {openMenu && (
+                      <ul className="flex flex-col gap-5 ml-6 w-full cursor-pointer">
+                        <li
+                          className="flex items-center w-full h-10 gap-x-5"
+                          onClick={() => {
+                            navigate("/admin/user");
+                          }}
+                        >
+                          <SupervisorAccountIcon /> User
+                        </li>
+                        <li
+                          className="flex items-center w-full h-10  gap-x-5"
+                          onClick={() => navigate("/admin/role")}
+                        >
+                          <SettingsIcon /> Role
+                        </li>
+                        <li
+                          className="flex items-center w-full h-10  gap-x-5"
+                          onClick={() => navigate("/admin/policy")}
+                        >
+                          <PolicyIcon /> Policy
+                        </li>
+                        <li
+                          className="flex items-center w-full h-10  gap-x-5"
+                          onClick={() => navigate("/admin/permission")}
+                        >
+                          <KeyIcon /> Permission
+                        </li>
+                      </ul>
+                    )}
+                  </li>
+                </ul>
+              </List>
+              <Divider />
+            </div>
           </Drawer>
           <Main open={open}>
             <DrawerHeader />

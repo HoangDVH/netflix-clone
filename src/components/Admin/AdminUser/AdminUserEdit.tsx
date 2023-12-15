@@ -116,20 +116,6 @@ export const AdminUserEdit = () => {
   //Get Name of Role By ID
   const { data: dataIdAccount, refetch: refetchGetAccount } =
     useGetAccountByIdQuery(editId);
-
-  const renderRoles = () => {
-    if (dataIdAccount && dataGetRoleById) {
-      const matchingRoles = dataIdAccount.roleIds.map((roleId) => {
-        const foundRole = dataGetRoleById.data.find(
-          (role) => role.id === roleId
-        );
-        return foundRole ? foundRole.name : null;
-      });
-
-      return matchingRoles.filter((role) => role !== null);
-    }
-    return [];
-  };
   //End
 
   const {
@@ -192,19 +178,14 @@ export const AdminUserEdit = () => {
     }
   });
 
-  const handleSaveAndClose = async () => {
-    try {
-      await onSubmit();
-      refetch();
+  React.useEffect(() => {
+    if (isSuccess) {
       toast.success("Edit successfully!");
-      navigate("/admin/user");
-    } catch (error) {
-      console.error("Error during form submission:", error);
+      navigate(`/admin/user/view/${editId}`);
     }
-  };
+  }, [editId, isSuccess, navigate]);
 
   // End Edit
-
   const [value, setValue] = React.useState(0);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -215,8 +196,6 @@ export const AdminUserEdit = () => {
   React.useEffect(() => {
     setSelectedRows(dataIdAccount?.roles.map((role) => role.id) || []);
   }, [dataIdAccount?.roles, roles]);
-
-  console.log('row',selectedRows)
 
   return (
     <form>
@@ -237,7 +216,7 @@ export const AdminUserEdit = () => {
               className={`bg-blue-500 px-3 py-3 rounded flex items-center gap-2 ${
                 !isPhoneNumberChanged ? "opacity-50 cursor-not-allowed" : ""
               }`}
-              onClick={handleSaveAndClose}
+              onClick={onSubmit}
             >
               <SaveIcon />
               SAVE & CLOSE

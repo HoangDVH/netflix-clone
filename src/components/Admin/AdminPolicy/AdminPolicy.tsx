@@ -15,8 +15,10 @@ import {
   useDeletePermissionSetMutation,
   useGetPermissionSetQuery,
 } from "../../../apis/accountUser";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalAdmin from "../Modal";
+import ClearIcon from "@mui/icons-material/Clear";
+
 export const AdminPolicy = () => {
   const { data, refetch } = useGetPermissionSetQuery();
   const permissionSet = data?.data ?? [];
@@ -44,6 +46,32 @@ export const AdminPolicy = () => {
     }
   };
 
+  //Search
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchClicked, setSearchClicked] = useState(false); // New state variable
+
+  const filteredPermissionSet = permissionSet.filter((per) =>
+    per.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearch = async () => {
+    if (searchTerm.trim() !== "") {
+      setSearchClicked(true);
+    } else {
+      setSearchClicked(false); // Set to false if the search term is empty
+    }
+  };
+
+  useEffect(() => {
+    setSearchClicked(false);
+  }, [searchTerm]);
+
+  const handleDeleteSearchInput = () => {
+    setSearchTerm("");
+  };
+
+  //*****//
+
   return (
     <div className="h-screen">
       <div className="flex items-center justify-between">
@@ -69,72 +97,154 @@ export const AdminPolicy = () => {
           </p>
         </div>
         <div className="flex gap-2 h-1/2">
-          <input className="border-slate-700 border-solid border-2 px-2 w-80" />
-          <button className="bg-blue-500 px-5 py-2 rounded text-white">
+          <div className="relative h-10">
+            <input
+              className="border-slate-700 border-solid border-2 px-2 w-80 h-full"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div onClick={handleDeleteSearchInput}>
+              {searchTerm && (
+                <ClearIcon
+                  className="absolute right-2 top-2 cursor-pointer"
+                  fontSize="medium"
+                />
+              )}
+            </div>
+          </div>
+          <button
+            className="bg-blue-500 px-5 py-2 rounded text-white"
+            onClick={handleSearch}
+          >
             <SearchIcon />
           </button>
         </div>
       </div>
 
       <p className="text-blue-500 text-2xl mb-5">
-        {permissionSet.length} Policies
+        {searchClicked ? filteredPermissionSet.length : permissionSet.length}{" "}
+        Policies
       </p>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5 h-96 ">
-        {permissionSet.map((per) => {
-          return (
-            <div>
-              <Card
-                sx={{ maxWidth: 345 }}
-                className="!bg-gray-200 !text-black relative"
-              >
-                <div>
-                  <CardHeader
-                    action={
-                      <IconButton aria-label="settings">
-                        <div onClick={() => setOpenActions(per.id)}>
-                          <MoreVertIcon className="text-black" />
-                        </div>
-                      </IconButton>
-                    }
-                    title={per.name}
-                  />
-
-                  <div
-                    className="line-clamp-2 px-5 h-12"
-                    onClick={() => navigate(`view/${per.id}`)}
+        {searchClicked && searchTerm.trim() !== ""
+          ? filteredPermissionSet.map((per) => {
+              return (
+                <div key={per.id}>
+                  <Card
+                    sx={{ maxWidth: 345 }}
+                    className="!bg-gray-200 !text-black relative"
                   >
-                    {per.description}
-                  </div>
+                    <div>
+                      <CardHeader
+                        action={
+                          <IconButton aria-label="settings">
+                            <div onClick={() => setOpenActions(per.id)}>
+                              <MoreVertIcon className="text-black" />
+                            </div>
+                          </IconButton>
+                        }
+                        title={per.name}
+                      />
 
-                  <CardContent>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      className="flex gap-4 !text-white !text-m pt-8"
-                    >
-                      <div className="bg-blue-600 px-3 py-2 rounded-3xl">
-                        Permissionset ({per.permissions.length})
-                      </div>
-                    </Typography>
-                  </CardContent>
-                </div>
-
-                <CardActions className="absolute top-12 right-5">
-                  {openActions === per.id && (
-                    <div className="bg-gray-400 px-5 py-3 rounded-sm cursor-pointer flex flex-col gap-3">
-                      <div onClick={() => navigate(`edit/${per.id}`)}>Edit</div>
                       <div
-                        onClick={() => handleClickOpenModal(per.id, per.name)}
+                        className="line-clamp-2 px-5 h-12"
+                        onClick={() => navigate(`view/${per.id}`)}
                       >
-                        Delete
+                        {per.description}
                       </div>
+
+                      <CardContent>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          className="flex gap-4 !text-white !text-m pt-8"
+                        >
+                          <div className="bg-blue-600 px-3 py-2 rounded-3xl">
+                            Permissionset ({per.permissions.length})
+                          </div>
+                        </Typography>
+                      </CardContent>
                     </div>
-                  )}
-                </CardActions>
-              </Card>
-            </div>
-          );
-        })}
+
+                    <CardActions className="absolute top-12 right-5">
+                      {openActions === per.id && (
+                        <div className="bg-gray-400 px-5 py-3 rounded-sm cursor-pointer flex flex-col gap-3">
+                          <div onClick={() => navigate(`edit/${per.id}`)}>
+                            Edit
+                          </div>
+                          <div
+                            onClick={() =>
+                              handleClickOpenModal(per.id, per.name)
+                            }
+                          >
+                            Delete
+                          </div>
+                        </div>
+                      )}
+                    </CardActions>
+                  </Card>
+                </div>
+              );
+            })
+          : permissionSet.map((per) => {
+              return (
+                <div key={per.id}>
+                  <Card
+                    sx={{ maxWidth: 345 }}
+                    className="!bg-gray-200 !text-black relative"
+                  >
+                    <div>
+                      <CardHeader
+                        action={
+                          <IconButton aria-label="settings">
+                            <div onClick={() => setOpenActions(per.id)}>
+                              <MoreVertIcon className="text-black" />
+                            </div>
+                          </IconButton>
+                        }
+                        title={per.name}
+                      />
+
+                      <div
+                        className="line-clamp-2 px-5 h-12"
+                        onClick={() => navigate(`view/${per.id}`)}
+                      >
+                        {per.description}
+                      </div>
+
+                      <CardContent>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          className="flex gap-4 !text-white !text-m pt-8"
+                        >
+                          <div className="bg-blue-600 px-3 py-2 rounded-3xl">
+                            Permissionset ({per.permissions.length})
+                          </div>
+                        </Typography>
+                      </CardContent>
+                    </div>
+
+                    <CardActions className="absolute top-12 right-5">
+                      {openActions === per.id && (
+                        <div className="bg-gray-400 px-5 py-3 rounded-sm cursor-pointer flex flex-col gap-3">
+                          <div onClick={() => navigate(`edit/${per.id}`)}>
+                            Edit
+                          </div>
+                          <div
+                            onClick={() =>
+                              handleClickOpenModal(per.id, per.name)
+                            }
+                          >
+                            Delete
+                          </div>
+                        </div>
+                      )}
+                    </CardActions>
+                  </Card>
+                </div>
+              );
+            })}
       </div>
       <ModalAdmin
         openModal={openModal}
@@ -147,9 +257,3 @@ export const AdminPolicy = () => {
     </div>
   );
 };
-
-
-
-
-
-

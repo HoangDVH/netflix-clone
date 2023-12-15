@@ -100,7 +100,6 @@ export const AdminRoleEdit = () => {
       idRole: idRole || "",
       body: data,
     });
-    console.log("data", data);
   });
 
   useEffect(() => {

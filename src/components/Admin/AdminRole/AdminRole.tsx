@@ -12,12 +12,12 @@ import React, { useEffect, useState } from "react";
 import {
   useDeleteRoleMutation,
   useGetRoleQuery,
-  useSearchRoleByNameQuery,
 } from "../../../apis/accountUser";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import ModalAdmin from "../Modal";
 import { CardActions } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 export const AdminRole = () => {
   const navigate = useNavigate();
   const [openActions, setOpenActions] = React.useState<string | null>(null);
@@ -49,20 +49,24 @@ export const AdminRole = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchClicked, setSearchClicked] = useState(false); // New state variable
 
-  const { data: dataSearchResults, refetch: refetchSearch } =
-    useSearchRoleByNameQuery(searchTerm);
+  const filteredRoles = roles.filter((role) =>
+    role.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearch = async () => {
+    if (searchTerm.trim() !== "") {
+      setSearchClicked(true);
+    } else {
+      setSearchClicked(false); // Set to false if the search term is empty
+    }
+  };
 
   useEffect(() => {
     setSearchClicked(false);
   }, [searchTerm]);
 
-  const handleSearch = async () => {
-    if (searchTerm.trim() !== "") {
-      await refetchSearch();
-      setSearchClicked(true);
-    } else {
-      setSearchClicked(false); // Set to false if the search term is empty
-    }
+  const handleDeleteSearchInput = () => {
+    setSearchTerm("");
   };
 
   //*****//
@@ -92,11 +96,21 @@ export const AdminRole = () => {
           </p>
         </div>
         <div className="flex gap-2 h-1/2">
-          <input
-            className="border-solid border-2 px-2 w-80"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div className="relative h-10">
+            <input
+              className="border-solid border-2 px-2 w-80 h-full"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div onClick={handleDeleteSearchInput}>
+              {searchTerm && (
+                <ClearIcon
+                  className="absolute right-2 top-2 cursor-pointer"
+                  fontSize="medium"
+                />
+              )}
+            </div>
+          </div>
           <button
             className="bg-blue-500 px-5 py-2 rounded text-white"
             onClick={handleSearch}
@@ -105,10 +119,10 @@ export const AdminRole = () => {
           </button>
         </div>
       </div>
-      <p className="text-blue-500 text-2xl mb-5">{roles.length} Roles</p>
+      <p className="text-blue-500 text-2xl mb-5">{searchClicked ? filteredRoles.length : roles.length} Roles</p>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5 h-96 ">
         {searchClicked && searchTerm.trim() !== ""
-          ? dataSearchResults?.data.map((role) => {
+          ? filteredRoles.map((role) => {
               return (
                 <div key={role.id}>
                   <Card

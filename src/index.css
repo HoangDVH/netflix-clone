@@ -31,3 +31,7 @@ body {
   object-fit: cover;
 }
 
+.css-6oic9t-MuiPaper-root-MuiDrawer-paper{
+  background-color:  #fff !important;
+}
+

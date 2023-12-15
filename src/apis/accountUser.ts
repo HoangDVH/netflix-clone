@@ -46,6 +46,11 @@ export const accountListApi = createApi({
         url: `/Role/${roleId}?isDeep=true`,
       }),
     }),
+    getUserById: builder.query<AccountList, string>({
+      query: (idView) => ({
+        url: `/User/${idView}?isDeep=true`,
+      }),
+    }),
     getRole: builder.query<RoleList, string>({
       query: () => ({
         url: "/Role?IsDeep=true",
@@ -61,6 +66,12 @@ export const accountListApi = createApi({
         url: `/Permission?Keyword=${name}&IsDeep=true`,
       }),
     }),
+    searchUserByName: builder.query<AccountListUser, string>({
+      query: (name) => ({
+        url: `/User?Keyword=${name}&IsDeep=true`,
+      }),
+    }),
+
     deleteAccount: builder.mutation<object, string>({
       query: (deleteId) => ({
         url: `/User/${deleteId}`,
@@ -107,7 +118,10 @@ export const accountListApi = createApi({
         body: JSON.stringify(body),
       }),
     }),
-    editRole: builder.mutation<RoleList, { idRole: string; body: RoleEditList }>({
+    editRole: builder.mutation<
+      RoleList,
+      { idRole: string; body: RoleEditList }
+    >({
       query: ({ idRole, body }) => ({
         url: `/Role/${idRole}`,
         method: "PUT",
@@ -176,7 +190,7 @@ export const accountListApi = createApi({
       }),
     }),
     getPermissionByUser: builder.query<string[], { id: string }>({
-      query: ({id}) => ({
+      query: ({ id }) => ({
         url: `/User/GetAllPermissions?userId=${id}`,
       }),
     }),
@@ -246,5 +260,7 @@ export const {
   useSearchRoleByNameQuery,
   useSearchPermissionByNameQuery,
   useGetCurrentUserQuery,
-  useGetPermissionByUserQuery
+  useGetPermissionByUserQuery,
+  useGetUserByIdQuery,
+  useSearchUserByNameQuery,
 } = accountListApi;

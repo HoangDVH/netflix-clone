@@ -4,8 +4,6 @@ import AdminTable from "../AdminTable";
 import ExportFile from "./ExportFile";
 import InputFileUpload from "./InputFileUpload";
 import AddIcon from "@mui/icons-material/Add";
-import { AdminSearch } from "../AdminSearch";
-import { SetStateAction, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectAuth } from "../../../store/authSlice";
 import {
@@ -14,15 +12,8 @@ import {
 } from "../../../apis/accountUser";
 
 export const AdminUser = () => {
-  const navigate = useNavigate()
-  const [inputChange,setInputChange] = useState("")
-  const handleInput = (e: { target: { value: SetStateAction<string>; }; }) => {
-    setInputChange(e.target.value)
-  }
-  console.log('search',inputChange)
+  const navigate = useNavigate();
 
-
- 
   const { accessToken } = useSelector(selectAuth);
   const { data: dataGetCurrentUser } = useGetCurrentUserQuery({
     accessToken: accessToken || "",
@@ -49,8 +40,7 @@ export const AdminUser = () => {
           </button>
         </div>
       </div>
-      <AdminSearch onChange={handleInput} />
-      <AdminTable inputChange={inputChange} />
+      <AdminTable />
     </div>
   );
 };

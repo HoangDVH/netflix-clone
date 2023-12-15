@@ -23,12 +23,13 @@ import { visuallyHidden } from "@mui/utils";
 import {
   useDeleteAccountMutation,
   useGetAccountListQuery,
-  useGetByEmailQuery,
-  useGetRoleQuery,
+  useSearchUserByNameQuery,
 } from "../../apis/accountUser";
 import ModalAdmin from "./Modal";
 import { useNavigate } from "react-router-dom";
 
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
 interface Data {
   id: string;
   email: string;
@@ -241,13 +242,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     </Toolbar>
   );
 }
-interface TableProp {
-  inputChange: string;
-}
-export default function AdminTable(props: TableProp) {
-  const { inputChange } = props;
-  const { data: dataSearch } = useGetByEmailQuery(inputChange);
-
+export default function AdminTable() {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = React.useState(false);
   const [deleteId, setDeleteId] = React.useState("");
@@ -271,7 +266,6 @@ export default function AdminTable(props: TableProp) {
   const { data, refetch } = useGetAccountListQuery();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const rows = data?.data ?? [];
-
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("userName");
@@ -343,120 +337,274 @@ export default function AdminTable(props: TableProp) {
     [order, orderBy, page, rows, rowsPerPage]
   );
 
+  //Search
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchClicked, setSearchClicked] = React.useState(false); // New state variable
+
+  const { data: dataSearchResults, refetch: refetchSearch } =
+    useSearchUserByNameQuery(searchTerm);
+
+  const handleSearch = async () => {
+    if (searchTerm.trim() !== "") {
+      await refetchSearch();
+      setSearchClicked(true);
+    } else {
+      setSearchClicked(false); // Set to false if the search term is empty
+    }
+  };
+
+  const handleDeleteSearchInput = () => {
+    setSearchTerm("");
+  };
+
+  //*****//
+
   return (
     <div className="mt-8">
+      <div className="flex">
+        <div className="relative w-1/4">
+          <input
+            className="border-2 border-gray-400 w-full mb-5 h-10 px-2 py-2"
+            placeholder="Seaarch by user name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <div onClick={handleDeleteSearchInput}>
+              <ClearIcon className="absolute right-2 top-2 cursor-pointer" />
+            </div>
+          )}
+        </div>
+        <button
+          className="bg-blue-500 h-10 px-2 py-2 rounded ml-2"
+          onClick={handleSearch}
+        >
+          <SearchIcon />
+        </button>
+      </div>
       <Box sx={{ width: "100%" }}>
         <Paper
           sx={{ width: "100%", mb: 2 }}
           className="!bg-slate-200 !text-black"
         >
           <EnhancedTableToolbar numSelected={selected.length} />
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size="medium"
-              className="!text-black"
-            >
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={rows?.length}
-              />
-              <TableBody>
-                {visibleRows?.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+          {searchClicked && searchTerm.trim() !== "" ? (
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 750 }}
+                aria-labelledby="tableTitle"
+                size="medium"
+                className="!text-black"
+              >
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={rows?.length}
+                />
+                <TableBody>
+                  {dataSearchResults?.data.map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                      sx={{ cursor: "pointer" }}
-                      className="group/item !text-black hover:!bg-slate-300"
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        className="!text-black"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                        sx={{ cursor: "pointer" }}
+                        className="group/item !text-black hover:!bg-slate-300"
                       >
-                        {row.email}
-                      </TableCell>
-                      <TableCell align="right" className="!text-black">
-                        {row.userName}
-                      </TableCell>
-                      <TableCell align="right" className="!text-black">
-                        {row.phoneNumber}
-                      </TableCell>
-                      <TableCell align="right" className="!text-black w-52">
-                        {row.roles.map((role) => role.name).join(", ")}
-                      </TableCell>
-                      <TableCell align="right" className="">
-                        <div className="flex space-x-6">
-                          <Tooltip
-                            title="Edit"
-                            placement="top"
-                            className="group/edit invisible group-hover/item:visible text-slate-600"
-                          >
-                            <div
-                              onClick={() =>
-                                navigate(`/admin/user/edit/${row.id}`)
-                              }
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                          className="!text-black"
+                          onClick={() => navigate(`/admin/user/view/${row.id}`)}
+                        >
+                          {row.email}
+                        </TableCell>
+                        <TableCell align="right" className="!text-black">
+                          {row.userName}
+                        </TableCell>
+                        <TableCell align="right" className="!text-black">
+                          {row.phoneNumber}
+                        </TableCell>
+                        <TableCell align="right" className="!text-black w-52">
+                          {row.roles.map((role) => role.name).join(", ")}
+                        </TableCell>
+                        <TableCell align="right" className="">
+                          <div className="flex space-x-6">
+                            <Tooltip
+                              title="Edit"
+                              placement="top"
+                              className="group/edit invisible group-hover/item:visible text-slate-600"
                             >
-                              <EditIcon />
-                            </div>
-                          </Tooltip>
+                              <div
+                                onClick={() =>
+                                  navigate(`/admin/user/edit/${row.id}`)
+                                }
+                              >
+                                <EditIcon />
+                              </div>
+                            </Tooltip>
 
-                          <Tooltip
-                            title="Delete"
-                            placement="top"
-                            className="group/edit invisible group-hover/item:visible text-red-600"
-                          >
-                            <div
-                              onClick={() => {
-                                handleClickOpenModal();
-                                setDeleteId(row.id);
-                              }}
+                            <Tooltip
+                              title="Delete"
+                              placement="top"
+                              className="group/edit invisible group-hover/item:visible text-red-600"
                             >
-                              <DeleteIcon />
-                            </div>
-                          </Tooltip>
-                        </div>
-                      </TableCell>
+                              <div
+                                onClick={() => {
+                                  handleClickOpenModal();
+                                  setDeleteId(row.id);
+                                }}
+                              >
+                                <DeleteIcon />
+                              </div>
+                            </Tooltip>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: 53 * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
                     </TableRow>
-                  );
-                })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 750 }}
+                aria-labelledby="tableTitle"
+                size="medium"
+                className="!text-black"
+              >
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={rows?.length}
+                />
+                <TableBody>
+                  {visibleRows?.map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                        sx={{ cursor: "pointer" }}
+                        className="group/item !text-black hover:!bg-slate-300"
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                          className="!text-black"
+                          onClick={() => navigate(`/admin/user/view/${row.id}`)}
+                        >
+                          {row.email}
+                        </TableCell>
+                        <TableCell align="right" className="!text-black">
+                          {row.userName}
+                        </TableCell>
+                        <TableCell align="right" className="!text-black">
+                          {row.phoneNumber}
+                        </TableCell>
+                        <TableCell align="right" className="!text-black w-52">
+                          {row.roles.map((role) => role.name).join(", ")}
+                        </TableCell>
+                        <TableCell align="right" className="">
+                          <div className="flex space-x-6">
+                            <Tooltip
+                              title="Edit"
+                              placement="top"
+                              className="group/edit invisible group-hover/item:visible text-slate-600"
+                            >
+                              <div
+                                onClick={() =>
+                                  navigate(`/admin/user/edit/${row.id}`)
+                                }
+                              >
+                                <EditIcon />
+                              </div>
+                            </Tooltip>
+
+                            <Tooltip
+                              title="Delete"
+                              placement="top"
+                              className="group/edit invisible group-hover/item:visible text-red-600"
+                            >
+                              <div
+                                onClick={() => {
+                                  handleClickOpenModal();
+                                  setDeleteId(row.id);
+                                }}
+                              >
+                                <DeleteIcon />
+                              </div>
+                            </Tooltip>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: 53 * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
